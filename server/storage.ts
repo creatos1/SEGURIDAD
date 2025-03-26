@@ -7,10 +7,21 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, sql as drizzleSql } from "drizzle-orm";
-import session from "express-session";
+import * as expressSession from "express-session";
 import createMemoryStore from "memorystore";
+import { scrypt, randomBytes, timingSafeEqual } from "crypto";
+import { promisify } from "util";
 
-const MemoryStore = createMemoryStore(session);
+// Create a memory store using the express-session module
+const MemoryStore = createMemoryStore(expressSession.default);
+const scryptAsync = promisify(scrypt);
+
+// Helper function to hash passwords
+async function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
+  return `${buf.toString("hex")}.${salt}`;
+}
 
 export interface IStorage {
   // User methods
@@ -72,7 +83,7 @@ export interface IStorage {
   getLocationUpdatesByAssignmentId(assignmentId: number): Promise<LocationUpdate[]>;
 
   // Session store
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using 'any' type for session store
 }
 
 export class MemStorage implements IStorage {
@@ -84,7 +95,7 @@ export class MemStorage implements IStorage {
   private driverRatingsMap: Map<number, DriverRating>;
   private locationUpdatesMap: Map<number, LocationUpdate>;
   private currentId: { [key: string]: number };
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using 'any' type for session store
 
   constructor() {
     this.usersMap = new Map();
@@ -107,32 +118,42 @@ export class MemStorage implements IStorage {
       checkPeriod: 86400000 // 24 hours
     });
 
-    // Create default admin user
-    this.createUser({
-      username: "admin",
-      email: "admin@transitpro.com",
-      password: "admin123",
-      role: UserRole.ADMIN,
-      fullName: "Admin User"
-    });
+    // Initialize the database with default users
+    this.initializeDefaultData();
+  }
 
-    // Create default normal user
-    this.createUser({
-      username: "user",
-      email: "user@example.com",
-      password: "user123",
-      role: UserRole.USER,
-      fullName: "Regular User"
-    });
+  // Initialize default data
+  private async initializeDefaultData() {
+    try {
+      // Create default admin user
+      await this.createUser({
+        username: "admin",
+        email: "admin@transitpro.com",
+        password: "admin123",
+        role: UserRole.ADMIN,
+        fullName: "Admin User"
+      });
 
-    // Create default driver user
-    this.createUser({
-      username: "driver",
-      email: "driver@transitpro.com",
-      password: "driver123",
-      role: UserRole.DRIVER,
-      fullName: "Carlos Mendez"
-    });
+      // Create default normal user
+      await this.createUser({
+        username: "user",
+        email: "user@example.com",
+        password: "user123",
+        role: UserRole.USER,
+        fullName: "Regular User"
+      });
+
+      // Create default driver user
+      await this.createUser({
+        username: "driver",
+        email: "driver@transitpro.com",
+        password: "driver123",
+        role: UserRole.DRIVER,
+        fullName: "Carlos Mendez"
+      });
+    } catch (error) {
+      console.error("Error initializing default data:", error);
+    }
   }
 
   // User methods
@@ -155,7 +176,20 @@ export class MemStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentId.users++;
     const timestamp = new Date();
-    const user: User = { ...insertUser, id, createdAt: timestamp };
+    
+    // Hash the password before storing
+    const hashedPassword = await hashPassword(insertUser.password);
+    
+    const user: User = { 
+      ...insertUser, 
+      password: hashedPassword,
+      id, 
+      createdAt: timestamp,
+      role: insertUser.role || UserRole.USER, // Ensure role is not undefined
+      fullName: insertUser.fullName || null,
+      profileImage: insertUser.profileImage || null
+    };
+    
     this.usersMap.set(id, user);
     return user;
   }
@@ -173,6 +207,14 @@ export class MemStorage implements IStorage {
   async updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined> {
     const user = this.usersMap.get(id);
     if (!user) return undefined;
+    
+    // If password is being updated, hash it
+    if (userData.password) {
+      userData = { 
+        ...userData, 
+        password: await hashPassword(userData.password) 
+      };
+    }
     
     const updatedUser: User = { ...user, ...userData };
     this.usersMap.set(id, updatedUser);
