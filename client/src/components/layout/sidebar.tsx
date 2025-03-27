@@ -32,19 +32,25 @@ type NavItemProps = {
 };
 
 function NavItem({ href, label, icon, active, onClick }: NavItemProps) {
+  const [_, navigate] = useLocation();
+  
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onClick) onClick();
+    navigate(href);
+  };
+  
   return (
-    <Link href={href}>
-      <a 
-        className={cn(
-          "flex items-center px-4 py-2 hover:bg-neutral-100 transition-colors",
-          active ? "text-primary font-medium" : "text-neutral-400"
-        )}
-        onClick={onClick}
-      >
-        <span className="mr-3">{icon}</span>
-        {label}
-      </a>
-    </Link>
+    <button 
+      className={cn(
+        "flex items-center px-4 py-2 hover:bg-neutral-100 transition-colors cursor-pointer w-full text-left",
+        active ? "text-primary font-medium" : "text-neutral-400"
+      )}
+      onClick={handleClick}
+    >
+      <span className="mr-3">{icon}</span>
+      {label}
+    </button>
   );
 }
 
