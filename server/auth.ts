@@ -70,6 +70,12 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Setup rate limiting for auth routes
+  const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5 // limit each IP to 5 requests per windowMs
+  });
+
   passport.use(
     new LocalStrategy({
       usernameField: 'email',

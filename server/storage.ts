@@ -12,6 +12,15 @@ const connectPgSimple = pgPkg;
 import createMemoryStore from "memorystore";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
+import { eq, and, desc } from "drizzle-orm";
+import {
+  users, vehicles, routes, routeStops, assignments,
+  driverRatings, locationUpdates,
+
+} from "@shared/schema";
+import { drizzle } from "drizzle-orm/pg-core";
+const db = drizzle(pool);
+
 
 // Create a memory store using the express-session module
 const MemoryStore = createMemoryStore(expressSession.default);
@@ -94,7 +103,7 @@ export class DatabaseStorage implements IStorage {
   constructor() {
     // Inicializar session store con PostgreSQL
     const PostgresStore = connectPgSimple(expressSession.default);
-    
+
     this.sessionStore = new PostgresStore({
       pool: pool,
       createTableIfMissing: true
@@ -229,21 +238,17 @@ export class DatabaseStorage implements IStorage {
     try {
       // Encriptar la contraseña antes de almacenarla
       const hashedPassword = await hashPassword(insertUser.password);
-      
-      const result = await pool.query(`
-        INSERT INTO users (username, email, password, role, full_name, profile_image)
-        VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING *
-      `, [
-        insertUser.username,
-        insertUser.email,
-        hashedPassword,
-        insertUser.role || UserRole.USER,
-        insertUser.fullName || null,
-        insertUser.profileImage || null
-      ]);
-      
-      return this.mapRowToUser(result.rows[0]);
+
+      const newUser = await db.insert(users).values({
+        ...insertUser,
+        password: hashedPassword,
+        role: insertUser.role || UserRole.USER,
+        fullName: insertUser.fullName || null,
+        profileImage: insertUser.profileImage || null,
+        createdAt: new Date()
+      }).returning();
+
+      return newUser[0];
     } catch (error) {
       console.error('Error in createUser:', error);
       throw error;
@@ -279,69 +284,69 @@ export class DatabaseStorage implements IStorage {
           password: await hashPassword(userData.password)
         };
       }
-      
+
       // Construir la consulta SQL dinámicamente
       const setClauses = [];
       const values = [];
       let paramCount = 1;
-      
+
       if (userData.username) {
         setClauses.push(`username = $${paramCount}`);
         values.push(userData.username);
         paramCount++;
       }
-      
+
       if (userData.email) {
         setClauses.push(`email = $${paramCount}`);
         values.push(userData.email);
         paramCount++;
       }
-      
+
       if (userData.password) {
         setClauses.push(`password = $${paramCount}`);
         values.push(userData.password);
         paramCount++;
       }
-      
+
       if (userData.role) {
         setClauses.push(`role = $${paramCount}`);
         values.push(userData.role);
         paramCount++;
       }
-      
+
       if (userData.fullName !== undefined) {
         setClauses.push(`full_name = $${paramCount}`);
         values.push(userData.fullName);
         paramCount++;
       }
-      
+
       if (userData.profileImage !== undefined) {
         setClauses.push(`profile_image = $${paramCount}`);
         values.push(userData.profileImage);
         paramCount++;
       }
-      
+
       // Si no hay nada que actualizar, retornar el usuario actual
       if (setClauses.length === 0) {
         return this.getUser(id);
       }
-      
+
       // Añadir el ID del usuario al array de valores
       values.push(id);
-      
+
       const query = `
         UPDATE users 
         SET ${setClauses.join(', ')} 
         WHERE id = $${paramCount}
         RETURNING *
       `;
-      
+
       const result = await pool.query(query, values);
-      
+
       if (result.rows.length === 0) {
         return undefined;
       }
-      
+
       return this.mapRowToUser(result.rows[0]);
     } catch (error) {
       console.error('Error in updateUser:', error);
@@ -385,7 +390,7 @@ export class DatabaseStorage implements IStorage {
         vehicle.lastMaintenance || null,
         vehicle.nextMaintenance || null
       ]);
-      
+
       return this.mapRowToVehicle(result.rows[0]);
     } catch (error) {
       console.error('Error in createVehicle:', error);
@@ -419,70 +424,70 @@ export class DatabaseStorage implements IStorage {
       const setClauses = [];
       const values = [];
       let paramCount = 1;
-      
+
       if (vehicleData.vehicleNumber) {
         setClauses.push(`vehicle_number = $${paramCount}`);
         values.push(vehicleData.vehicleNumber);
         paramCount++;
       }
-      
+
       if (vehicleData.vehicleType) {
         setClauses.push(`vehicle_type = $${paramCount}`);
         values.push(vehicleData.vehicleType);
         paramCount++;
       }
-      
+
       if (vehicleData.capacity !== undefined) {
         setClauses.push(`capacity = $${paramCount}`);
         values.push(vehicleData.capacity);
         paramCount++;
       }
-      
+
       if (vehicleData.status) {
         setClauses.push(`status = $${paramCount}`);
         values.push(vehicleData.status);
         paramCount++;
       }
-      
+
       if (vehicleData.fuelStatus !== undefined) {
         setClauses.push(`fuel_status = $${paramCount}`);
         values.push(vehicleData.fuelStatus);
         paramCount++;
       }
-      
+
       if (vehicleData.lastMaintenance !== undefined) {
         setClauses.push(`last_maintenance = $${paramCount}`);
         values.push(vehicleData.lastMaintenance);
         paramCount++;
       }
-      
+
       if (vehicleData.nextMaintenance !== undefined) {
         setClauses.push(`next_maintenance = $${paramCount}`);
         values.push(vehicleData.nextMaintenance);
         paramCount++;
       }
-      
+
       // Si no hay nada que actualizar, retornar el vehículo actual
       if (setClauses.length === 0) {
         return this.getVehicle(id);
       }
-      
+
       // Añadir el ID del vehículo al array de valores
       values.push(id);
-      
+
       const query = `
         UPDATE vehicles 
         SET ${setClauses.join(', ')} 
         WHERE id = $${paramCount}
         RETURNING *
       `;
-      
+
       const result = await pool.query(query, values);
-      
+
       if (result.rows.length === 0) {
         return undefined;
       }
-      
+
       return this.mapRowToVehicle(result.rows[0]);
     } catch (error) {
       console.error('Error in updateVehicle:', error);
@@ -512,59 +517,26 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createRoute(route: InsertRoute): Promise<Route> {
-    const client = await pool.connect();
     try {
-      await client.query('BEGIN');
-      
-      // Insert the route
-      const routeResult = await client.query(`
-        INSERT INTO routes (name, status, description, start_location, end_location, waypoints, frequency, created_by)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        RETURNING *
-      `, [
-        route.name,
-        route.status || 'active',
-        route.description || null,
-        route.startLocation,
-        route.endLocation,
-        route.waypoints || [],
-        route.frequency,
-        route.createdBy || null
-      ]);
-
-      // If route stops are provided, insert them
-      if (route.stops && Array.isArray(route.stops)) {
-        for (let i = 0; i < route.stops.length; i++) {
-          const stop = route.stops[i];
-          await client.query(`
-            INSERT INTO route_stops (route_id, name, location, arrival_time, departure_time, "order")
-            VALUES ($1, $2, $3, $4, $5, $6)
-          `, [
-            routeResult.rows[0].id,
-            stop.name,
-            stop.location,
-            stop.arrivalTime,
-            stop.departureTime,
-            i + 1
-          ]);
-        }
-      }
-
-      await client.query('COMMIT');
-      return this.mapRowToRoute(routeResult.rows[0]);
+      const newRoute = await db.insert(routes).values({
+        ...route,
+        status: route.status || 'active',
+        description: route.description || null,
+        waypoints: route.waypoints || [],
+        createdBy: route.createdBy || null,
+        createdAt: new Date()
+      }).returning();
+      return newRoute[0];
     } catch (error) {
-      await client.query('ROLLBACK');
       console.error('Error in createRoute:', error);
       throw error;
-    } finally {
-      client.release();
     }
   }
 
   async getAllRoutes(): Promise<Route[]> {
     try {
-      const result = await pool.query('SELECT * FROM routes');
-      return result.rows.map(row => this.mapRowToRoute(row));
+      const allRoutes = await db.select().from(routes).orderBy(desc(routes.createdAt));
+      return allRoutes;
     } catch (error) {
       console.error('Error in getAllRoutes:', error);
       return [];
@@ -587,76 +559,76 @@ export class DatabaseStorage implements IStorage {
       const setClauses = [];
       const values = [];
       let paramCount = 1;
-      
+
       if (routeData.name) {
         setClauses.push(`name = $${paramCount}`);
         values.push(routeData.name);
         paramCount++;
       }
-      
+
       if (routeData.status) {
         setClauses.push(`status = $${paramCount}`);
         values.push(routeData.status);
         paramCount++;
       }
-      
+
       if (routeData.description !== undefined) {
         setClauses.push(`description = $${paramCount}`);
         values.push(routeData.description);
         paramCount++;
       }
-      
+
       if (routeData.startLocation) {
         setClauses.push(`start_location = $${paramCount}`);
         values.push(routeData.startLocation);
         paramCount++;
       }
-      
+
       if (routeData.endLocation) {
         setClauses.push(`end_location = $${paramCount}`);
         values.push(routeData.endLocation);
         paramCount++;
       }
-      
+
       if (routeData.waypoints !== undefined) {
         setClauses.push(`waypoints = $${paramCount}`);
         values.push(routeData.waypoints);
         paramCount++;
       }
-      
+
       if (routeData.frequency !== undefined) {
         setClauses.push(`frequency = $${paramCount}`);
         values.push(routeData.frequency);
         paramCount++;
       }
-      
+
       if (routeData.createdBy !== undefined) {
         setClauses.push(`created_by = $${paramCount}`);
         values.push(routeData.createdBy);
         paramCount++;
       }
-      
+
       // Si no hay nada que actualizar, retornar la ruta actual
       if (setClauses.length === 0) {
         return this.getRoute(id);
       }
-      
+
       // Añadir el ID de la ruta al array de valores
       values.push(id);
-      
+
       const query = `
         UPDATE routes 
         SET ${setClauses.join(', ')} 
         WHERE id = $${paramCount}
         RETURNING *
       `;
-      
+
       const result = await pool.query(query, values);
-      
+
       if (result.rows.length === 0) {
         return undefined;
       }
-      
+
       return this.mapRowToRoute(result.rows[0]);
     } catch (error) {
       console.error('Error in updateRoute:', error);
@@ -699,7 +671,7 @@ export class DatabaseStorage implements IStorage {
         routeStop.departureTime || null,
         routeStop.order
       ]);
-      
+
       return this.mapRowToRouteStop(result.rows[0]);
     } catch (error) {
       console.error('Error in createRouteStop:', error);
@@ -723,64 +695,64 @@ export class DatabaseStorage implements IStorage {
       const setClauses = [];
       const values = [];
       let paramCount = 1;
-      
+
       if (routeStopData.name) {
         setClauses.push(`name = $${paramCount}`);
         values.push(routeStopData.name);
         paramCount++;
       }
-      
+
       if (routeStopData.routeId !== undefined) {
         setClauses.push(`route_id = $${paramCount}`);
         values.push(routeStopData.routeId);
         paramCount++;
       }
-      
+
       if (routeStopData.location) {
         setClauses.push(`location = $${paramCount}`);
         values.push(routeStopData.location);
         paramCount++;
       }
-      
+
       if (routeStopData.arrivalTime !== undefined) {
         setClauses.push(`arrival_time = $${paramCount}`);
         values.push(routeStopData.arrivalTime);
         paramCount++;
       }
-      
+
       if (routeStopData.departureTime !== undefined) {
         setClauses.push(`departure_time = $${paramCount}`);
         values.push(routeStopData.departureTime);
         paramCount++;
       }
-      
+
       if (routeStopData.order !== undefined) {
         setClauses.push(`"order" = $${paramCount}`);
         values.push(routeStopData.order);
         paramCount++;
       }
-      
+
       // Si no hay nada que actualizar, retornar la parada actual
       if (setClauses.length === 0) {
         return this.getRouteStop(id);
       }
-      
+
       // Añadir el ID de la parada al array de valores
       values.push(id);
-      
+
       const query = `
         UPDATE route_stops 
         SET ${setClauses.join(', ')} 
         WHERE id = $${paramCount}
         RETURNING *
       `;
-      
+
       const result = await pool.query(query, values);
-      
+
       if (result.rows.length === 0) {
         return undefined;
       }
-      
+
       return this.mapRowToRouteStop(result.rows[0]);
     } catch (error) {
       console.error('Error in updateRouteStop:', error);
@@ -823,7 +795,7 @@ export class DatabaseStorage implements IStorage {
         assignment.endTime || null,
         assignment.status || 'pending'
       ]);
-      
+
       return this.mapRowToAssignment(result.rows[0]);
     } catch (error) {
       console.error('Error in createAssignment:', error);
@@ -877,64 +849,64 @@ export class DatabaseStorage implements IStorage {
       const setClauses = [];
       const values = [];
       let paramCount = 1;
-      
+
       if (assignmentData.routeId !== undefined) {
         setClauses.push(`route_id = $${paramCount}`);
         values.push(assignmentData.routeId);
         paramCount++;
       }
-      
+
       if (assignmentData.driverId !== undefined) {
         setClauses.push(`driver_id = $${paramCount}`);
         values.push(assignmentData.driverId);
         paramCount++;
       }
-      
+
       if (assignmentData.vehicleId !== undefined) {
         setClauses.push(`vehicle_id = $${paramCount}`);
         values.push(assignmentData.vehicleId);
         paramCount++;
       }
-      
+
       if (assignmentData.startTime !== undefined) {
         setClauses.push(`start_time = $${paramCount}`);
         values.push(assignmentData.startTime);
         paramCount++;
       }
-      
+
       if (assignmentData.endTime !== undefined) {
         setClauses.push(`end_time = $${paramCount}`);
         values.push(assignmentData.endTime);
         paramCount++;
       }
-      
+
       if (assignmentData.status !== undefined) {
         setClauses.push(`status = $${paramCount}`);
         values.push(assignmentData.status);
         paramCount++;
       }
-      
+
       // Si no hay nada que actualizar, retornar la asignación actual
       if (setClauses.length === 0) {
         return this.getAssignment(id);
       }
-      
+
       // Añadir el ID de la asignación al array de valores
       values.push(id);
-      
+
       const query = `
         UPDATE assignments 
         SET ${setClauses.join(', ')} 
         WHERE id = $${paramCount}
         RETURNING *
       `;
-      
+
       const result = await pool.query(query, values);
-      
+
       if (result.rows.length === 0) {
         return undefined;
       }
-      
+
       return this.mapRowToAssignment(result.rows[0]);
     } catch (error) {
       console.error('Error in updateAssignment:', error);
@@ -976,7 +948,7 @@ export class DatabaseStorage implements IStorage {
         driverRating.comment || null,
         driverRating.assignmentId || null
       ]);
-      
+
       return this.mapRowToDriverRating(result.rows[0]);
     } catch (error) {
       console.error('Error in createDriverRating:', error);
@@ -1021,58 +993,58 @@ export class DatabaseStorage implements IStorage {
       const setClauses = [];
       const values = [];
       let paramCount = 1;
-      
+
       if (driverRatingData.driverId !== undefined) {
         setClauses.push(`driver_id = $${paramCount}`);
         values.push(driverRatingData.driverId);
         paramCount++;
       }
-      
+
       if (driverRatingData.userId !== undefined) {
         setClauses.push(`user_id = $${paramCount}`);
         values.push(driverRatingData.userId);
         paramCount++;
       }
-      
+
       if (driverRatingData.rating !== undefined) {
         setClauses.push(`rating = $${paramCount}`);
         values.push(driverRatingData.rating);
         paramCount++;
       }
-      
+
       if (driverRatingData.comment !== undefined) {
         setClauses.push(`comment = $${paramCount}`);
         values.push(driverRatingData.comment);
         paramCount++;
       }
-      
+
       if (driverRatingData.assignmentId !== undefined) {
         setClauses.push(`assignment_id = $${paramCount}`);
         values.push(driverRatingData.assignmentId);
         paramCount++;
       }
-      
+
       // Si no hay nada que actualizar, retornar la calificación actual
       if (setClauses.length === 0) {
         return this.getDriverRating(id);
       }
-      
+
       // Añadir el ID de la calificación al array de valores
       values.push(id);
-      
+
       const query = `
         UPDATE driver_ratings 
         SET ${setClauses.join(', ')} 
         WHERE id = $${paramCount}
         RETURNING *
       `;
-      
+
       const result = await pool.query(query, values);
-      
+
       if (result.rows.length === 0) {
         return undefined;
       }
-      
+
       return this.mapRowToDriverRating(result.rows[0]);
     } catch (error) {
       console.error('Error in updateDriverRating:', error);
@@ -1115,7 +1087,7 @@ export class DatabaseStorage implements IStorage {
         locationUpdate.speed || null,
         locationUpdate.heading || null
       ]);
-      
+
       return this.mapRowToLocationUpdate(result.rows[0]);
     } catch (error) {
       console.error('Error in createLocationUpdate:', error);

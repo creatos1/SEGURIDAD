@@ -40,6 +40,39 @@ export function setupWebSocketServer(server: Server) {
       try {
         const data = JSON.parse(message.toString());
         
+        switch (data.type) {
+          case 'subscribe':
+            client.subscriptions.add(data.channel);
+            break;
+            
+          case 'unsubscribe':
+            client.subscriptions.delete(data.channel);
+            break;
+            
+          case 'location_update':
+            if (data.assignmentId && data.latitude && data.longitude) {
+              const update = await storage.createLocationUpdate({
+                assignmentId: data.assignmentId,
+                latitude: data.latitude,
+                longitude: data.longitude,
+                speed: data.speed,
+                heading: data.heading,
+                status: data.status || 'on-time'
+              });
+              
+              broadcastToChannel(`assignment_${data.assignmentId}`, {
+                type: 'location_update',
+                data: update
+              });
+            }
+            break;
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+      try {
+        const data = JSON.parse(message.toString());
+        
         // Handle authentication
         if (data.type === 'auth') {
           const { userId, role } = data;
