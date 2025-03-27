@@ -5,7 +5,7 @@ import {
   type DriverRating, type InsertDriverRating, type LocationUpdate, type InsertLocationUpdate,
   UserRole
 } from "@shared/schema";
-import { db } from "./db";
+import { db, sql } from "./db";
 import { eq, and, or, desc, sql as drizzleSql } from "drizzle-orm";
 import * as expressSession from "express-session";
 import createMemoryStore from "memorystore";
@@ -453,4 +453,345 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Implementación de la interfaz IStorage con la base de datos PostgreSQL
+export class DatabaseStorage implements IStorage {
+  sessionStore: any; // Usando 'any' para el tipo de session store
+
+  constructor() {
+    // Inicializar session store con PostgreSQL
+    const connectPgSimple = require('connect-pg-simple');
+    const PostgresStore = connectPgSimple(expressSession.default);
+    
+    this.sessionStore = new PostgresStore({
+      pool: pool,
+      createTableIfMissing: true
+    });
+  }
+
+  // Métodos de usuario
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    // Encriptar la contraseña antes de almacenarla
+    const hashedPassword = await hashPassword(insertUser.password);
+    
+    const [user] = await db.insert(users)
+      .values({
+        ...insertUser,
+        password: hashedPassword,
+        role: insertUser.role || UserRole.USER,
+        fullName: insertUser.fullName || null,
+        profileImage: insertUser.profileImage || null,
+        createdAt: new Date()
+      })
+      .returning();
+    
+    return user;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return db.select().from(users);
+  }
+
+  async getUsersByRole(role: string): Promise<User[]> {
+    return db.select().from(users).where(eq(users.role, role));
+  }
+
+  async updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined> {
+    // Si se va a actualizar la contraseña, hashearla primero
+    if (userData.password) {
+      userData = {
+        ...userData,
+        password: await hashPassword(userData.password)
+      };
+    }
+    
+    const [updatedUser] = await db.update(users)
+      .set(userData)
+      .where(eq(users.id, id))
+      .returning();
+    
+    return updatedUser;
+  }
+
+  async deleteUser(id: number): Promise<boolean> {
+    const result = await db.delete(users).where(eq(users.id, id));
+    return true; // Drizzle no proporciona un recuento claro, así que asumimos éxito si no hay error
+  }
+
+  // Métodos de vehículo
+  async getVehicle(id: number): Promise<Vehicle | undefined> {
+    const [vehicle] = await db.select().from(vehicles).where(eq(vehicles.id, id));
+    return vehicle;
+  }
+
+  async createVehicle(vehicle: InsertVehicle): Promise<Vehicle> {
+    const [newVehicle] = await db.insert(vehicles)
+      .values({
+        ...vehicle,
+        status: vehicle.status || "inactive",
+        fuelStatus: vehicle.fuelStatus || 0,
+        lastMaintenance: vehicle.lastMaintenance || null,
+        nextMaintenance: vehicle.nextMaintenance || null,
+        createdAt: new Date()
+      })
+      .returning();
+    
+    return newVehicle;
+  }
+
+  async getAllVehicles(): Promise<Vehicle[]> {
+    return db.select().from(vehicles);
+  }
+
+  async getActiveVehicles(): Promise<Vehicle[]> {
+    return db.select().from(vehicles).where(eq(vehicles.status, "active"));
+  }
+
+  async updateVehicle(id: number, vehicleData: Partial<InsertVehicle>): Promise<Vehicle | undefined> {
+    const [updatedVehicle] = await db.update(vehicles)
+      .set(vehicleData)
+      .where(eq(vehicles.id, id))
+      .returning();
+    
+    return updatedVehicle;
+  }
+
+  async deleteVehicle(id: number): Promise<boolean> {
+    await db.delete(vehicles).where(eq(vehicles.id, id));
+    return true;
+  }
+
+  // Métodos de ruta
+  async getRoute(id: number): Promise<Route | undefined> {
+    const [route] = await db.select().from(routes).where(eq(routes.id, id));
+    return route;
+  }
+
+  async createRoute(route: InsertRoute): Promise<Route> {
+    const [newRoute] = await db.insert(routes)
+      .values({
+        ...route,
+        status: route.status || "inactive",
+        description: route.description || null,
+        waypoints: route.waypoints || null,
+        createdBy: route.createdBy || null,
+        createdAt: new Date()
+      })
+      .returning();
+    
+    return newRoute;
+  }
+
+  async getAllRoutes(): Promise<Route[]> {
+    return db.select().from(routes);
+  }
+
+  async getActiveRoutes(): Promise<Route[]> {
+    return db.select().from(routes).where(eq(routes.status, "active"));
+  }
+
+  async updateRoute(id: number, routeData: Partial<InsertRoute>): Promise<Route | undefined> {
+    const [updatedRoute] = await db.update(routes)
+      .set(routeData)
+      .where(eq(routes.id, id))
+      .returning();
+    
+    return updatedRoute;
+  }
+
+  async deleteRoute(id: number): Promise<boolean> {
+    await db.delete(routes).where(eq(routes.id, id));
+    return true;
+  }
+
+  // Métodos de parada de ruta
+  async getRouteStop(id: number): Promise<RouteStop | undefined> {
+    const [routeStop] = await db.select().from(routeStops).where(eq(routeStops.id, id));
+    return routeStop;
+  }
+
+  async createRouteStop(routeStop: InsertRouteStop): Promise<RouteStop> {
+    const [newRouteStop] = await db.insert(routeStops)
+      .values({
+        ...routeStop,
+        arrivalTime: routeStop.arrivalTime || null,
+        departureTime: routeStop.departureTime || null
+      })
+      .returning();
+    
+    return newRouteStop;
+  }
+
+  async getRouteStopsByRouteId(routeId: number): Promise<RouteStop[]> {
+    return db.select()
+      .from(routeStops)
+      .where(eq(routeStops.routeId, routeId))
+      .orderBy(routeStops.order);
+  }
+
+  async updateRouteStop(id: number, routeStopData: Partial<InsertRouteStop>): Promise<RouteStop | undefined> {
+    const [updatedRouteStop] = await db.update(routeStops)
+      .set(routeStopData)
+      .where(eq(routeStops.id, id))
+      .returning();
+    
+    return updatedRouteStop;
+  }
+
+  async deleteRouteStop(id: number): Promise<boolean> {
+    await db.delete(routeStops).where(eq(routeStops.id, id));
+    return true;
+  }
+
+  // Métodos de asignación
+  async getAssignment(id: number): Promise<Assignment | undefined> {
+    const [assignment] = await db.select().from(assignments).where(eq(assignments.id, id));
+    return assignment;
+  }
+
+  async createAssignment(assignment: InsertAssignment): Promise<Assignment> {
+    const [newAssignment] = await db.insert(assignments)
+      .values({
+        ...assignment,
+        status: assignment.status || "pending",
+        endTime: assignment.endTime || null,
+        createdAt: new Date()
+      })
+      .returning();
+    
+    return newAssignment;
+  }
+
+  async getAssignmentsByDriverId(driverId: number): Promise<Assignment[]> {
+    return db.select().from(assignments).where(eq(assignments.driverId, driverId));
+  }
+
+  async getAssignmentsByVehicleId(vehicleId: number): Promise<Assignment[]> {
+    return db.select().from(assignments).where(eq(assignments.vehicleId, vehicleId));
+  }
+
+  async getAssignmentsByRouteId(routeId: number): Promise<Assignment[]> {
+    return db.select().from(assignments).where(eq(assignments.routeId, routeId));
+  }
+
+  async getActiveAssignments(): Promise<Assignment[]> {
+    return db.select().from(assignments).where(eq(assignments.status, "in-progress"));
+  }
+
+  async updateAssignment(id: number, assignmentData: Partial<InsertAssignment>): Promise<Assignment | undefined> {
+    const [updatedAssignment] = await db.update(assignments)
+      .set(assignmentData)
+      .where(eq(assignments.id, id))
+      .returning();
+    
+    return updatedAssignment;
+  }
+
+  async deleteAssignment(id: number): Promise<boolean> {
+    await db.delete(assignments).where(eq(assignments.id, id));
+    return true;
+  }
+
+  // Métodos de calificación de conductores
+  async getDriverRating(id: number): Promise<DriverRating | undefined> {
+    const [rating] = await db.select().from(driverRatings).where(eq(driverRatings.id, id));
+    return rating;
+  }
+
+  async createDriverRating(driverRating: InsertDriverRating): Promise<DriverRating> {
+    const [newRating] = await db.insert(driverRatings)
+      .values({
+        ...driverRating,
+        comment: driverRating.comment || null,
+        assignmentId: driverRating.assignmentId || null,
+        createdAt: new Date()
+      })
+      .returning();
+    
+    return newRating;
+  }
+
+  async getDriverRatingsByDriverId(driverId: number): Promise<DriverRating[]> {
+    return db.select().from(driverRatings).where(eq(driverRatings.driverId, driverId));
+  }
+
+  async getDriverRatingsByUserId(userId: number): Promise<DriverRating[]> {
+    return db.select().from(driverRatings).where(eq(driverRatings.userId, userId));
+  }
+
+  async getAverageDriverRating(driverId: number): Promise<number | null> {
+    const ratings = await this.getDriverRatingsByDriverId(driverId);
+    if (ratings.length === 0) return null;
+    
+    const sum = ratings.reduce((acc, rating) => acc + rating.rating, 0);
+    return parseFloat((sum / ratings.length).toFixed(1));
+  }
+
+  async updateDriverRating(id: number, driverRatingData: Partial<InsertDriverRating>): Promise<DriverRating | undefined> {
+    const [updatedRating] = await db.update(driverRatings)
+      .set(driverRatingData)
+      .where(eq(driverRatings.id, id))
+      .returning();
+    
+    return updatedRating;
+  }
+
+  async deleteDriverRating(id: number): Promise<boolean> {
+    await db.delete(driverRatings).where(eq(driverRatings.id, id));
+    return true;
+  }
+
+  // Métodos de actualización de ubicación
+  async getLocationUpdate(id: number): Promise<LocationUpdate | undefined> {
+    const [locationUpdate] = await db.select().from(locationUpdates).where(eq(locationUpdates.id, id));
+    return locationUpdate;
+  }
+
+  async createLocationUpdate(locationUpdate: InsertLocationUpdate): Promise<LocationUpdate> {
+    const [newLocationUpdate] = await db.insert(locationUpdates)
+      .values({
+        ...locationUpdate,
+        status: locationUpdate.status || "active",
+        speed: locationUpdate.speed || null,
+        heading: locationUpdate.heading || null,
+        timestamp: new Date()
+      })
+      .returning();
+    
+    return newLocationUpdate;
+  }
+
+  async getLatestLocationUpdateByAssignmentId(assignmentId: number): Promise<LocationUpdate | undefined> {
+    const [latestUpdate] = await db.select()
+      .from(locationUpdates)
+      .where(eq(locationUpdates.assignmentId, assignmentId))
+      .orderBy(desc(locationUpdates.timestamp))
+      .limit(1);
+    
+    return latestUpdate;
+  }
+
+  async getLocationUpdatesByAssignmentId(assignmentId: number): Promise<LocationUpdate[]> {
+    return db.select()
+      .from(locationUpdates)
+      .where(eq(locationUpdates.assignmentId, assignmentId))
+      .orderBy(desc(locationUpdates.timestamp));
+  }
+}
+
+// Usar almacenamiento en base de datos en lugar de memoria
+export const storage = new DatabaseStorage();
