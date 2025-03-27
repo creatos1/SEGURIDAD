@@ -4,14 +4,16 @@ import * as schema from "@shared/schema";
 
 // Create a PostgreSQL pool
 export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL?.replace('.us-east-2', '-pooler.us-east-2'),
   ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 5000,
-  query_timeout: 10000,
-  statement_timeout: 10000,
-  idle_in_transaction_session_timeout: 10000,
-  max: 20,
-  retries: 3
+  connectionTimeoutMillis: 10000,
+  query_timeout: 20000,
+  statement_timeout: 20000,
+  idle_in_transaction_session_timeout: 20000,
+  max: 10,
+  min: 2,
+  idleTimeoutMillis: 120000,
+  retries: 5
 });
 
 // Function to initialize the database
