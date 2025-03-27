@@ -19,7 +19,8 @@ import {
   BarChart, 
   LogOut,
   Menu,
-  X
+  X,
+  Settings
 } from "lucide-react";
 
 type NavItemProps = {

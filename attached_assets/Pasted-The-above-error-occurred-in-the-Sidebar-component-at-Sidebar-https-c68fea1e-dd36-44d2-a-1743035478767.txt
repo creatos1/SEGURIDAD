@@ -1,0 +1,36 @@
+The above error occurred in the <Sidebar> component:
+
+    at Sidebar (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/components/layout/sidebar.tsx:77:22)
+    at div
+    at DashboardPage (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/pages/dashboard-page.tsx:32:35)
+    at Route (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=9a8cdbc8:323:16)
+    at ProtectedRoute (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/lib/protected-route.tsx:22:3)
+    at Switch (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=9a8cdbc8:379:17)
+    at Router
+    at TourProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/hooks/use-tour.tsx:22:32)
+    at AuthProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/hooks/use-auth.tsx:27:32)
+    at QueryClientProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=9a8cdbc8:2805:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+at Sidebar (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/components/layout/sidebar.tsx:77:22)
+at div
+at DashboardPage (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/pages/dashboard-page.tsx:32:35)
+at Route (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=9a8cdbc8:323:16)
+at ProtectedRoute (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/lib/protected-route.tsx:22:3)
+at Switch (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=9a8cdbc8:379:17)
+at Router
+at TourProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/hooks/use-tour.tsx:22:32)
+at AuthProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/hooks/use-auth.tsx:27:32)
+at QueryClientProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=9a8cdbc8:2805:3)
+at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+at t.value (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+Settings is not defined
