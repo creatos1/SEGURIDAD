@@ -5,7 +5,13 @@ import * as schema from "@shared/schema";
 // Create a PostgreSQL pool
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
+  connectionTimeoutMillis: 5000,
+  query_timeout: 10000,
+  statement_timeout: 10000,
+  idle_in_transaction_session_timeout: 10000,
+  max: 20,
+  retries: 3
 });
 
 // Function to initialize the database
