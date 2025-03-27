@@ -1,14 +1,25 @@
-const API_BASE_URL = 'http://0.0.0.0:5000/api';
 
-// ... rest of the client-side code (assuming this is a React or similar frontend application) ...
+export const API_BASE_URL = 'http://0.0.0.0:5000/api';
 
-// Example of a fetch call using the updated API_BASE_URL:
-fetch(API_BASE_URL + '/users')
-  .then(response => response.json())
-  .then(data => {
-    // Process the data
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
+export async function throwIfResNotOk(res: Response) {
+  if (!res.ok) {
+    const text = (await res.text()) || res.statusText;
+    throw new Error(`${res.status}: ${text}`);
+  }
+}
+
+export async function apiRequest(
+  method: string,
+  url: string,
+  data?: unknown | undefined,
+): Promise<Response> {
+  const res = await fetch(url, {
+    method,
+    headers: data ? { "Content-Type": "application/json" } : {},
+    body: data ? JSON.stringify(data) : undefined,
+    credentials: "include",
   });
+
+  await throwIfResNotOk(res);
+  return res;
+}
