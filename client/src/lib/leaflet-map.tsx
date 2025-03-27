@@ -67,7 +67,7 @@ export default function LeafletMap({
   }, [center, zoom, onClick]);
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !markers) return;
 
     // Clear existing markers
     markersRef.current.forEach(marker => marker.remove());
@@ -75,8 +75,7 @@ export default function LeafletMap({
 
     // Add new markers
     markers.forEach(marker => {
-      const newMarker = L.marker(marker.position)
-        .addTo(mapRef.current!);
+      const newMarker = L.marker(marker.position).addTo(mapRef.current!); //Removed conditional icons as they were not defined
 
       if (marker.popup) {
         newMarker.bindPopup(marker.popup);
@@ -87,7 +86,7 @@ export default function LeafletMap({
   }, [markers]);
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !routes) return;
 
     // Clear existing routes
     routesRef.current.forEach(route => route.remove());
