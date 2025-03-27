@@ -41,11 +41,17 @@ export const routes = pgTable("routes", {
   description: text("description"),
   startLocation: text("start_location").notNull(),
   endLocation: text("end_location").notNull(),
+  coordinates: text("coordinates").array(), // Array of [lat,lng] coordinates
   waypoints: text("waypoints").array(),
   frequency: integer("frequency").notNull(), // in minutes
   status: text("status").notNull().default("active"),
   createdAt: timestamp("created_at").defaultNow(),
   createdBy: integer("created_by").references(() => users.id),
+});
+
+export const routeCoordinateSchema = z.object({
+  lat: z.number(),
+  lng: z.number()
 });
 
 // Route stops table
