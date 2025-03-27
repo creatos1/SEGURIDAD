@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +15,8 @@ import {
 } from "@/components/ui/dialog";
 import { Plus } from 'lucide-react';
 import type { Route } from '@shared/schema';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@radix-ui/react-select'
+
 
 interface RouteCreatorProps {
   onEdit?: Route | null;
@@ -33,6 +34,13 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
   const [frequency, setFrequency] = useState('15');
   const [coordinates, setCoordinates] = useState<[number, number][]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState('');
+
+
+  const { data: vehicles = [] } = useQuery({
+    queryKey: ['/api/vehicles/active'],
+    queryFn: () => apiRequest('GET', '/api/vehicles/active').then(res => res.json())
+  });
 
   useEffect(() => {
     if (onEdit) {
@@ -45,6 +53,7 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
       if (onEdit.waypoints) {
         setCoordinates(onEdit.waypoints.map(wp => [parseFloat(wp.split(',')[0]), parseFloat(wp.split(',')[1])]));
       }
+      setSelectedVehicle(onEdit.vehicleId ? onEdit.vehicleId.toString() : ''); // Assuming vehicleId exists
     }
   }, [onEdit]);
 
@@ -93,9 +102,20 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
     setFrequency('15');
     setCoordinates([]);
     setIsDrawing(false);
+    setSelectedVehicle('');
   };
 
   const handleSubmit = async () => {
+    if (!coordinates.length) {
+      alert('Please add some waypoints to the route');
+      return;
+    }
+
+    if (!selectedVehicle) {
+      alert('Please select a vehicle for this route');
+      return;
+    }
+
     const data = {
       name: routeName,
       description,
@@ -103,7 +123,8 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
       endLocation,
       frequency: parseInt(frequency),
       waypoints: coordinates.map(coord => `${coord[0]},${coord[1]}`),
-      status: 'active'
+      status: 'active',
+      vehicleId: parseInt(selectedVehicle)
     };
 
     if (onEdit) {
@@ -152,6 +173,18 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
           />
+          <Select value={selectedVehicle} onValueChange={setSelectedVehicle}>
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccionar Vehículo" />
+            </SelectTrigger>
+            <SelectContent>
+              {vehicles.map((vehicle) => (
+                <SelectItem key={vehicle.id} value={vehicle.id.toString()}>
+                  Unidad #{vehicle.vehicleNumber} - {vehicle.vehicleType}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="h-[400px] rounded-md border">
             <LeafletMap
               center={[25.761681, -80.191788]}
