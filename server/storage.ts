@@ -512,26 +512,53 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createRoute(route: InsertRoute): Promise<Route> {
+    const client = await pool.connect();
     try {
-      const result = await pool.query(`
+      await client.query('BEGIN');
+      
+      // Insert the route
+      const routeResult = await client.query(`
         INSERT INTO routes (name, status, description, start_location, end_location, waypoints, frequency, created_by)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *
       `, [
         route.name,
-        route.status || 'inactive',
+        route.status || 'active',
         route.description || null,
         route.startLocation,
         route.endLocation,
-        route.waypoints || null,
+        route.waypoints || [],
         route.frequency,
         route.createdBy || null
       ]);
-      
-      return this.mapRowToRoute(result.rows[0]);
+
+      // If route stops are provided, insert them
+      if (route.stops && Array.isArray(route.stops)) {
+        for (let i = 0; i < route.stops.length; i++) {
+          const stop = route.stops[i];
+          await client.query(`
+            INSERT INTO route_stops (route_id, name, location, arrival_time, departure_time, "order")
+            VALUES ($1, $2, $3, $4, $5, $6)
+          `, [
+            routeResult.rows[0].id,
+            stop.name,
+            stop.location,
+            stop.arrivalTime,
+            stop.departureTime,
+            i + 1
+          ]);
+        }
+      }
+
+      await client.query('COMMIT');
+      return this.mapRowToRoute(routeResult.rows[0]);
     } catch (error) {
+      await client.query('ROLLBACK');
       console.error('Error in createRoute:', error);
       throw error;
+    } finally {
+      client.release();
+    }
     }
   }
 

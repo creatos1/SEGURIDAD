@@ -104,8 +104,18 @@ export const insertUserSchema = createInsertSchema(users)
 export const insertVehicleSchema = createInsertSchema(vehicles)
   .omit({ id: true, createdAt: true });
 
+export const routeStopInputSchema = z.object({
+  name: z.string(),
+  location: z.string(),
+  arrivalTime: z.string().optional(),
+  departureTime: z.string().optional()
+});
+
 export const insertRouteSchema = createInsertSchema(routes)
-  .omit({ id: true, createdAt: true });
+  .omit({ id: true, createdAt: true })
+  .extend({
+    stops: z.array(routeStopInputSchema).optional()
+  });
 
 export const insertRouteStopSchema = createInsertSchema(routeStops)
   .omit({ id: true });
