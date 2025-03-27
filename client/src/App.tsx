@@ -10,7 +10,7 @@ import DashboardPage from "@/pages/dashboard-page";
 import SettingsPage from "@/pages/settings-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import TourGuide from "./components/onboarding/tours";
-import RoutesPage from "@/pages/routes"; // Added import
+import RoutesPage from "@/pages/routes-page"; // Added import
 
 function Router() {
   return (
