@@ -109,41 +109,51 @@ export default function Sidebar() {
                 Administration
               </p>
               <nav>
-                <NavItem 
-                  href="/" 
-                  label="Dashboard" 
-                  icon={<LayoutDashboard size={18} />} 
-                  active={location === '/'} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <NavItem 
-                  href="/routes" 
-                  label="Routes" 
-                  icon={<Route size={18} />} 
-                  active={location.startsWith('/routes')} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <NavItem 
-                  href="/drivers" 
-                  label="Drivers" 
-                  icon={<Car size={18} />} 
-                  active={location.startsWith('/drivers')} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <NavItem 
-                  href="/vehicles" 
-                  label="Vehicles" 
-                  icon={<Bus size={18} />} 
-                  active={location.startsWith('/vehicles')} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <NavItem 
-                  href="/reports" 
-                  label="Reports" 
-                  icon={<BarChart size={18} />} 
-                  active={location.startsWith('/reports')} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
+                <div data-tour="admin-dashboard">
+                  <NavItem 
+                    href="/" 
+                    label="Dashboard" 
+                    icon={<LayoutDashboard size={18} />} 
+                    active={location === '/'} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
+                <div data-tour="admin-routes">
+                  <NavItem 
+                    href="/routes" 
+                    label="Routes" 
+                    icon={<Route size={18} />} 
+                    active={location.startsWith('/routes')} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
+                <div data-tour="admin-drivers">
+                  <NavItem 
+                    href="/drivers" 
+                    label="Drivers" 
+                    icon={<Car size={18} />} 
+                    active={location.startsWith('/drivers')} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
+                <div data-tour="admin-vehicles">
+                  <NavItem 
+                    href="/vehicles" 
+                    label="Vehicles" 
+                    icon={<Bus size={18} />} 
+                    active={location.startsWith('/vehicles')} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
+                <div data-tour="admin-assignments">
+                  <NavItem 
+                    href="/reports" 
+                    label="Reports" 
+                    icon={<BarChart size={18} />} 
+                    active={location.startsWith('/reports')} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
               </nav>
             </div>
           )}
@@ -155,34 +165,42 @@ export default function Sidebar() {
                 User Menu
               </p>
               <nav>
-                <NavItem 
-                  href="/" 
-                  label="Live Routes" 
-                  icon={<Map size={18} />} 
-                  active={location === '/'} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <NavItem 
-                  href="/favorites" 
-                  label="Favorites" 
-                  icon={<Star size={18} />} 
-                  active={location.startsWith('/favorites')} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <NavItem 
-                  href="/ratings" 
-                  label="My Ratings" 
-                  icon={<Star size={18} />} 
-                  active={location.startsWith('/ratings')} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <NavItem 
-                  href="/history" 
-                  label="History" 
-                  icon={<History size={18} />} 
-                  active={location.startsWith('/history')} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
+                <div data-tour="user-routes">
+                  <NavItem 
+                    href="/" 
+                    label="Live Routes" 
+                    icon={<Map size={18} />} 
+                    active={location === '/'} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
+                <div data-tour="user-favorite-routes">
+                  <NavItem 
+                    href="/favorites" 
+                    label="Favorites" 
+                    icon={<Star size={18} />} 
+                    active={location.startsWith('/favorites')} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
+                <div data-tour="user-ratings">
+                  <NavItem 
+                    href="/ratings" 
+                    label="My Ratings" 
+                    icon={<Star size={18} />} 
+                    active={location.startsWith('/ratings')} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
+                <div data-tour="user-history">
+                  <NavItem 
+                    href="/history" 
+                    label="History" 
+                    icon={<History size={18} />} 
+                    active={location.startsWith('/history')} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
               </nav>
             </div>
           )}
@@ -194,40 +212,57 @@ export default function Sidebar() {
                 Driver Menu
               </p>
               <nav>
-                <NavItem 
-                  href="/" 
-                  label="My Route" 
-                  icon={<Navigation size={18} />} 
-                  active={location === '/'} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <NavItem 
-                  href="/vehicle" 
-                  label="My Vehicle" 
-                  icon={<Bus size={18} />} 
-                  active={location.startsWith('/vehicle')} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <NavItem 
-                  href="/schedule" 
-                  label="Schedule" 
-                  icon={<Calendar size={18} />} 
-                  active={location.startsWith('/schedule')} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <NavItem 
-                  href="/my-ratings" 
-                  label="My Ratings" 
-                  icon={<Star size={18} />} 
-                  active={location.startsWith('/my-ratings')} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
+                <div data-tour="driver-route">
+                  <NavItem 
+                    href="/" 
+                    label="My Route" 
+                    icon={<Navigation size={18} />} 
+                    active={location === '/'} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
+                <div data-tour="driver-vehicle">
+                  <NavItem 
+                    href="/vehicle" 
+                    label="My Vehicle" 
+                    icon={<Bus size={18} />} 
+                    active={location.startsWith('/vehicle')} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
+                <div data-tour="driver-schedule">
+                  <NavItem 
+                    href="/schedule" 
+                    label="Schedule" 
+                    icon={<Calendar size={18} />} 
+                    active={location.startsWith('/schedule')} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
+                <div data-tour="driver-ratings">
+                  <NavItem 
+                    href="/my-ratings" 
+                    label="My Ratings" 
+                    icon={<Star size={18} />} 
+                    active={location.startsWith('/my-ratings')} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
               </nav>
             </div>
           )}
         </ScrollArea>
         
         <div className="p-4 border-t mt-auto">
+          <div className="mb-2" data-tour="driver-settings">
+            <NavItem 
+              href="/settings" 
+              label="Settings" 
+              icon={<Settings size={18} />} 
+              active={location.startsWith('/settings')} 
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+          </div>
           <Button 
             variant="ghost" 
             className="flex items-center w-full justify-start text-neutral-400 hover:text-destructive"
