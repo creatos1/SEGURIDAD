@@ -49,13 +49,32 @@ function MapEvents({ onClick }: { onClick?: (lat: number, lng: number) => void }
 }
 
 export default function LeafletMap({
-  center,
-  zoom,
+  center = [25.761681, -80.191788],
+  zoom = 13,
   markers = [],
   routes = [],
   className = "",
   onClick
 }: LeafletMapProps) {
+  const validMarkers = markers?.filter(marker => 
+    marker?.position && 
+    Array.isArray(marker.position) && 
+    marker.position.length === 2 &&
+    !isNaN(marker.position[0]) && 
+    !isNaN(marker.position[1])
+  ) || [];
+
+  const validRoutes = routes?.filter(route => 
+    route?.path && 
+    Array.isArray(route.path) && 
+    route.path.every(pos => 
+      Array.isArray(pos) && 
+      pos.length === 2 && 
+      !isNaN(pos[0]) && 
+      !isNaN(pos[1])
+    )
+  ) || [];
+
   return (
     <MapContainer 
       center={center}
@@ -68,13 +87,13 @@ export default function LeafletMap({
         attribution='© OpenStreetMap contributors'
       />
 
-      {markers?.map((marker, index) => (
+      {validMarkers.map((marker, index) => (
         <Marker key={index} position={marker.position}>
           {marker.popup && <Popup>{marker.popup}</Popup>}
         </Marker>
       ))}
 
-      {routes?.map((route, index) => (
+      {validRoutes.map((route, index) => (
         <Polyline
           key={index}
           positions={route.path}
