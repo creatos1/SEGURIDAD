@@ -18,7 +18,7 @@ import {
   driverRatings, locationUpdates,
 
 } from "@shared/schema";
-import { drizzle } from "drizzle-orm/pg-core";
+import { drizzle } from "drizzle-orm/node-postgres";
 const db = drizzle(pool);
 
 
