@@ -518,15 +518,25 @@ export class DatabaseStorage implements IStorage {
 
   async createRoute(route: InsertRoute): Promise<Route> {
     try {
-      const newRoute = await db.insert(routes).values({
-        ...route,
-        status: route.status || 'active',
-        description: route.description || null,
-        waypoints: route.waypoints || [],
-        createdBy: route.createdBy || null,
-        createdAt: new Date()
-      }).returning();
-      return newRoute[0];
+      const { status, description, waypoints, createdBy, ...restRoute } = route;
+      const result = await pool.query(`
+        INSERT INTO routes (
+          name, description, start_location, end_location, 
+          waypoints, frequency, status, created_by, created_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+        RETURNING *
+      `, [
+        restRoute.name,
+        description || null,
+        restRoute.startLocation,
+        restRoute.endLocation,
+        waypoints || [],
+        restRoute.frequency,
+        status || 'active',
+        createdBy || null
+      ]);
+      
+      return this.mapRowToRoute(result.rows[0]);
     } catch (error) {
       console.error('Error in createRoute:', error);
       throw error;
