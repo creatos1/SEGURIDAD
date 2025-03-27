@@ -35,6 +35,18 @@ export default function RouteCreator() {
     setCoordinates(prev => [...prev, [lat, lng]]);
   }, [isDrawing]);
 
+  const markers = coordinates.map((coord, index) => ({
+    position: coord,
+    popup: `Punto ${index + 1}`,
+    type: 'stop' as const
+  }));
+
+  const route = coordinates.length >= 2 ? [{
+    path: coordinates,
+    color: '#0000FF',
+    weight: 3
+  }] : [];
+
   const handleSave = async () => {
     if (coordinates.length < 2) {
       toast({
@@ -135,11 +147,11 @@ export default function RouteCreator() {
                   
                   <div className="h-[400px] rounded-md border">
                     <LeafletMap
-                      center={[0, 0]}
+                      center={[25.761681, -80.191788]}
                       zoom={13}
                       onClick={handleMapClick}
-                      markers={coordinates}
-                      polyline={coordinates}
+                      markers={markers}
+                      routes={route}
                     />
                   </div>
                 </div>
