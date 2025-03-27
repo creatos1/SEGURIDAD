@@ -47,12 +47,20 @@ export function useWebSocket() {
       });
     };
 
-    socket.onclose = () => {
+    socket.onclose = (event) => {
       setIsConnected(false);
-      console.log("WebSocket disconnected");
+      console.log("WebSocket disconnected", event.code, event.reason);
       
-      // Attempt to reconnect after a delay
-      setTimeout(connect, 3000);
+      // Only attempt to reconnect if the connection wasn't closed intentionally
+      if (event.code !== 1000) {
+        console.log("Attempting to reconnect...");
+        setTimeout(connect, 3000);
+      }
+    };
+
+    socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      // Don't close the socket here - let the onclose handler deal with reconnection
     };
 
     socket.onerror = (error) => {

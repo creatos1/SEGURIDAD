@@ -21,6 +21,20 @@ export function setupWebSocketServer(server: Server) {
     };
     clients.set(ws, client);
 
+    // Setup heartbeat
+    ws.on('pong', () => {
+      (ws as any).isAlive = true;
+    });
+
+    // Send initial ping
+    (ws as any).isAlive = true;
+    ws.ping();
+
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+      ws.terminate();
+    });
+
     // Handle messages
     ws.on('message', async (message) => {
       try {
