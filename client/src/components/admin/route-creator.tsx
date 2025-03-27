@@ -2,12 +2,16 @@
 import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import LeafletMap from '@/lib/leaflet-map';
 import { useToast } from '@/components/ui/use-toast';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function RouteCreator() {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [routeName, setRouteName] = useState('');
+  const [description, setDescription] = useState('');
   const [coordinates, setCoordinates] = useState<[number, number][]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
 
@@ -34,6 +38,7 @@ export default function RouteCreator() {
         },
         body: JSON.stringify({
           name: routeName,
+          description,
           startLocation: `${coordinates[0][0]},${coordinates[0][1]}`,
           endLocation: `${coordinates[coordinates.length-1][0]},${coordinates[coordinates.length-1][1]}`,
           coordinates: coordinates.map(coord => `${coord[0]},${coord[1]}`),
@@ -44,6 +49,8 @@ export default function RouteCreator() {
 
       if (!response.ok) throw new Error('Failed to create route');
 
+      await queryClient.invalidateQueries({ queryKey: ['/api/routes'] });
+
       toast({
         title: "Success",
         description: "Route created successfully"
@@ -51,6 +58,7 @@ export default function RouteCreator() {
 
       // Reset form
       setRouteName('');
+      setDescription('');
       setCoordinates([]);
       setIsDrawing(false);
     } catch (error) {
@@ -64,21 +72,30 @@ export default function RouteCreator() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-4">
-        <Input 
-          placeholder="Route name"
-          value={routeName}
-          onChange={(e) => setRouteName(e.target.value)}
-        />
-        <Button
-          onClick={() => setIsDrawing(!isDrawing)}
-          variant={isDrawing ? "destructive" : "default"}
-        >
-          {isDrawing ? 'Stop Drawing' : 'Start Drawing'}
-        </Button>
-        <Button onClick={handleSave} disabled={!routeName || coordinates.length < 2}>
-          Save Route
-        </Button>
+      <div className="flex gap-4 mb-4">
+        <div className="flex-1 space-y-4">
+          <Input 
+            placeholder="Route name"
+            value={routeName}
+            onChange={(e) => setRouteName(e.target.value)}
+          />
+          <Textarea
+            placeholder="Description (optional)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className="space-x-2">
+          <Button
+            onClick={() => setIsDrawing(!isDrawing)}
+            variant={isDrawing ? "destructive" : "default"}
+          >
+            {isDrawing ? 'Stop Drawing' : 'Start Drawing'}
+          </Button>
+          <Button onClick={handleSave} disabled={!routeName || coordinates.length < 2}>
+            Save Route
+          </Button>
+        </div>
       </div>
 
       <LeafletMap
