@@ -33,13 +33,13 @@ type NavItemProps = {
 
 function NavItem({ href, label, icon, active, onClick }: NavItemProps) {
   const [_, navigate] = useLocation();
-  
+
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (onClick) onClick();
     navigate(href);
   };
-  
+
   return (
     <button 
       className={cn(
@@ -91,7 +91,7 @@ export default function Sidebar() {
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
-      
+
       <div className={cn(
         "md:block", 
         isMobileMenuOpen ? "block" : "hidden"
@@ -107,7 +107,7 @@ export default function Sidebar() {
             </div>
           </div>
         </div>
-        
+
         <ScrollArea className="h-[calc(100vh-130px)]">
           {/* Admin Navigation */}
           {isAdmin && (
@@ -164,7 +164,7 @@ export default function Sidebar() {
               </nav>
             </div>
           )}
-          
+
           {/* User Navigation */}
           {isUser && (
             <div className="py-2">
@@ -211,7 +211,7 @@ export default function Sidebar() {
               </nav>
             </div>
           )}
-          
+
           {/* Driver Navigation */}
           {isDriver && (
             <div className="py-2">
@@ -259,7 +259,7 @@ export default function Sidebar() {
             </div>
           )}
         </ScrollArea>
-        
+
         <div className="p-4 border-t mt-auto">
           <div className="mb-2" data-tour="driver-settings">
             <NavItem 
