@@ -1,0 +1,43 @@
+RoutesPage is not defined
+at Router (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/App.tsx?v=vlkBitjmrlCnGMHtCr5A0:46:166)
+at renderWithHooks (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:11548:26)
+at mountIndeterminateComponent (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:14926:21)
+at beginWork (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:15914:22)
+at HTMLUnknownElement.callCallback2 (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:3674:22)
+at Object.invokeGuardedCallbackDev (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:3699:24)
+at invokeGuardedCallback (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:3733:39)
+at beginWork$1 (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:19765:15)
+at performUnitOfWork (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:19198:20)
+at workLoopSync (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:19137:13)
+RoutesPage is not defined
+at Router (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/App.tsx?v=vlkBitjmrlCnGMHtCr5A0:46:166)
+at renderWithHooks (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:11548:26)
+at mountIndeterminateComponent (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:14926:21)
+at beginWork (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:15914:22)
+at HTMLUnknownElement.callCallback2 (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:3674:22)
+at Object.invokeGuardedCallbackDev (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:3699:24)
+at invokeGuardedCallback (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:3733:39)
+at beginWork$1 (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:19765:15)
+at performUnitOfWork (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:19198:20)
+at workLoopSync (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:19137:13)
+The above error occurred in the <Router> component:
+
+    at Router (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/App.tsx?v=vlkBitjmrlCnGMHtCr5A0:46:166)
+    at TourProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/hooks/use-tour.tsx:22:32)
+    at AuthProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/hooks/use-auth.tsx:27:32)
+    at QueryClientProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=0216d858:2805:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+RoutesPage is not defined
+at Router (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/App.tsx?v=vlkBitjmrlCnGMHtCr5A0:46:166)
+at renderWithHooks (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:11548:26)
+at mountIndeterminateComponent (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:14926:21)
+at beginWork (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:15914:22)
+at beginWork$1 (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:19753:22)
+at performUnitOfWork (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:19198:20)
+at workLoopSync (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:19137:13)
+at renderRootSync (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:19116:15)
+at recoverFromConcurrentError (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=0216d858:18736:28)
+at performConcurrentWorkOnRoot (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=
