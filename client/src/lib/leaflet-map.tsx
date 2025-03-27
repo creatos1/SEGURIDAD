@@ -40,7 +40,7 @@ export default function LeafletMap({
   useEffect(() => {
     if (!mapRef.current) {
       const map = L.map(id).setView(center, zoom);
-      
+
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
@@ -73,11 +73,11 @@ export default function LeafletMap({
     markers.forEach(marker => {
       const newMarker = L.marker(marker.position)
         .addTo(mapRef.current!);
-      
+
       if (marker.popup) {
         newMarker.bindPopup(marker.popup);
       }
-      
+
       markersRef.current.push(newMarker);
     });
   }, [markers]);
@@ -95,71 +95,10 @@ export default function LeafletMap({
         color: route.color || '#FF0000',
         weight: route.weight || 3
       }).addTo(mapRef.current!);
-      
+
       routesRef.current.push(polyline);
     });
   }, [routes]);
 
   return <div id={id} className={`${className} w-full h-full`} />;
-}
-
-interface LeafletMapProps {
-  id: string;
-  center: [number, number];
-  zoom: number;
-  markers?: Marker[];
-  routes?: Route[];
-}
-
-export default function LeafletMap({ id, center, zoom, markers = [], routes = [] }: LeafletMapProps) {
-  const mapRef = useRef<L.Map | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Initialize map
-    const map = L.map(containerRef.current).setView(center, zoom);
-    mapRef.current = map;
-
-    // Add tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Cleanup on unmount
-    return () => {
-      map.remove();
-      mapRef.current = null;
-    };
-  }, []);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    // Update markers
-    markers.forEach(marker => {
-      L.marker(marker.position)
-        .bindPopup(marker.popup || '')
-        .addTo(map);
-    });
-
-    // Update routes
-    routes.forEach(route => {
-      L.polyline(route.path, {
-        color: route.color || '#FF0000',
-        weight: 3
-      }).addTo(map);
-    });
-
-  }, [markers, routes]);
-
-  return (
-    <div 
-      ref={containerRef} 
-      id={id} 
-      className="w-full h-[500px] rounded-lg overflow-hidden"
-    />
-  );
 }
