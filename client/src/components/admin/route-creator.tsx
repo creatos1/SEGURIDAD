@@ -1,11 +1,12 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import LeafletMap from '@/lib/leaflet-map';
+import { apiRequest } from '@/lib/api';
 import {
   Dialog,
   DialogContent,
@@ -16,18 +17,66 @@ import {
 import { Plus } from 'lucide-react';
 import type { Route } from '@shared/schema';
 
-export default function RouteCreator() {
+interface RouteCreatorProps {
+  onEdit?: Route | null;
+  onEditComplete?: () => void;
+}
+
+export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [routeName, setRouteName] = useState('');
   const [description, setDescription] = useState('');
+  const [startLocation, setStartLocation] = useState('');
+  const [endLocation, setEndLocation] = useState('');
+  const [frequency, setFrequency] = useState('15');
   const [coordinates, setCoordinates] = useState<[number, number][]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
 
-  // Fetch existing routes
-  const { data: routes, isLoading } = useQuery<Route[]>({
-    queryKey: ['/api/routes'],
+  useEffect(() => {
+    if (onEdit) {
+      setIsDialogOpen(true);
+      setRouteName(onEdit.name);
+      setDescription(onEdit.description || '');
+      setStartLocation(onEdit.startLocation);
+      setEndLocation(onEdit.endLocation);
+      setFrequency(onEdit.frequency.toString());
+      if (onEdit.waypoints) {
+        setCoordinates(onEdit.waypoints.map(wp => [parseFloat(wp.split(',')[0]), parseFloat(wp.split(',')[1])]));
+      }
+    }
+  }, [onEdit]);
+
+  const createMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest('POST', '/api/routes', data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/routes'] });
+      resetForm();
+      toast({
+        title: "Ruta creada",
+        description: "La ruta ha sido creada exitosamente.",
+      });
+    }
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      const res = await apiRequest('PUT', `/api/routes/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/routes'] });
+      resetForm();
+      if (onEditComplete) onEditComplete();
+      toast({
+        title: "Ruta actualizada",
+        description: "La ruta ha sido actualizada exitosamente.",
+      });
+    }
   });
 
   const handleMapClick = useCallback((lat: number, lng: number) => {
@@ -35,156 +84,110 @@ export default function RouteCreator() {
     setCoordinates(prev => [...prev, [lat, lng]]);
   }, [isDrawing]);
 
-  const markers = coordinates.map((coord, index) => ({
-    position: coord,
-    popup: `Punto ${index + 1}`,
-    type: 'stop' as const
-  }));
+  const resetForm = () => {
+    setIsDialogOpen(false);
+    setRouteName('');
+    setDescription('');
+    setStartLocation('');
+    setEndLocation('');
+    setFrequency('15');
+    setCoordinates([]);
+    setIsDrawing(false);
+  };
 
-  const route = coordinates.length >= 2 ? [{
-    path: coordinates,
-    color: '#0000FF',
-    weight: 3
-  }] : [];
+  const handleSubmit = async () => {
+    const data = {
+      name: routeName,
+      description,
+      startLocation,
+      endLocation,
+      frequency: parseInt(frequency),
+      waypoints: coordinates.map(coord => coord.join(',')),
+      status: 'active'
+    };
 
-  const handleSave = async () => {
-    if (coordinates.length < 2) {
-      toast({
-        title: "Error",
-        description: "Please draw at least a start and end point for the route",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/routes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: routeName,
-          description,
-          startLocation: `${coordinates[0][0]},${coordinates[0][1]}`,
-          endLocation: `${coordinates[coordinates.length-1][0]},${coordinates[coordinates.length-1][1]}`,
-          waypoints: coordinates.map(coord => `${coord[0]},${coord[1]}`),
-          status: 'active',
-          frequency: 15
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to create route');
-      
-      await queryClient.invalidateQueries({ queryKey: ['/api/routes'] });
-      
-      toast({
-        title: "Success",
-        description: "Route created successfully"
-      });
-
-      setIsDialogOpen(false);
-      setRouteName('');
-      setDescription('');
-      setCoordinates([]);
-      setIsDrawing(false);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create route",
-        variant: "destructive"
-      });
+    if (onEdit) {
+      await updateMutation.mutate({ id: onEdit.id, data });
+    } else {
+      await createMutation.mutate(data);
     }
   };
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">Routes Management</h2>
-          <p className="text-muted-foreground">Create and manage transportation routes</p>
-        </div>
-        
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add New Route
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger asChild>
+        <Button>
+          <Plus className="mr-2 h-4 w-4" />
+          {onEdit ? 'Editar Ruta' : 'Nueva Ruta'}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[800px]">
+        <DialogHeader>
+          <DialogTitle>{onEdit ? 'Editar Ruta' : 'Crear Nueva Ruta'}</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <Input
+            placeholder="Nombre de la ruta"
+            value={routeName}
+            onChange={(e) => setRouteName(e.target.value)}
+          />
+          <Textarea
+            placeholder="Descripción"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <Input
+            placeholder="Ubicación inicial"
+            value={startLocation}
+            onChange={(e) => setStartLocation(e.target.value)}
+          />
+          <Input
+            placeholder="Ubicación final"
+            value={endLocation}
+            onChange={(e) => setEndLocation(e.target.value)}
+          />
+          <Input
+            type="number"
+            placeholder="Frecuencia (minutos)"
+            value={frequency}
+            onChange={(e) => setFrequency(e.target.value)}
+          />
+          <div className="h-[400px] rounded-md border">
+            <LeafletMap
+              center={[25.761681, -80.191788]}
+              zoom={13}
+              onClick={handleMapClick}
+              markers={coordinates.map((coord, index) => ({
+                position: coord,
+                popup: `Punto ${index + 1}`,
+                type: 'stop' as const
+              }))}
+              routes={coordinates.length >= 2 ? [{
+                path: coordinates,
+                color: '#0000FF',
+                weight: 3
+              }] : []}
+            />
+          </div>
+          <div className="flex justify-between">
+            <Button
+              type="button"
+              variant={isDrawing ? "destructive" : "outline"}
+              onClick={() => setIsDrawing(!isDrawing)}
+            >
+              {isDrawing ? 'Detener Dibujo' : 'Iniciar Dibujo'}
             </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[800px]">
-            <DialogHeader>
-              <DialogTitle>Create New Route</DialogTitle>
-            </DialogHeader>
-            
-            <div className="space-y-4 py-4">
-              <div className="grid gap-4">
-                <div className="space-y-2">
-                  <Input
-                    placeholder="Route name"
-                    value={routeName}
-                    onChange={(e) => setRouteName(e.target.value)}
-                  />
-                  <Input
-                    placeholder="Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => setIsDrawing(!isDrawing)}
-                      variant={isDrawing ? "destructive" : "default"}
-                    >
-                      {isDrawing ? 'Stop Drawing' : 'Start Drawing'}
-                    </Button>
-                    <Button onClick={handleSave} disabled={!routeName || coordinates.length < 2}>
-                      Save Route
-                    </Button>
-                  </div>
-                  
-                  <div className="h-[400px] rounded-md border">
-                    <LeafletMap
-                      center={[25.761681, -80.191788]}
-                      zoom={13}
-                      onClick={handleMapClick}
-                      markers={markers}
-                      routes={route}
-                    />
-                  </div>
-                </div>
-              </div>
+            <div className="space-x-2">
+              <Button variant="outline" onClick={resetForm}>
+                Cancelar
+              </Button>
+              <Button onClick={handleSubmit}>
+                {onEdit ? 'Actualizar' : 'Crear'}
+              </Button>
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-
-      <div className="grid gap-4">
-        {isLoading ? (
-          <Card className="p-4">Loading routes...</Card>
-        ) : routes?.map((route) => (
-          <Card key={route.id} className="p-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="font-medium">{route.name}</h3>
-                <p className="text-sm text-muted-foreground">{route.description}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className={`px-2 py-1 text-xs rounded-full ${
-                  route.status === 'active' 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-gray-100 text-gray-700'
-                }`}>
-                  {route.status}
-                </span>
-                <Button variant="outline" size="sm">Edit</Button>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
-    </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
