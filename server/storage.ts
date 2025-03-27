@@ -535,8 +535,13 @@ export class DatabaseStorage implements IStorage {
 
   async getAllRoutes(): Promise<Route[]> {
     try {
-      const allRoutes = await db.select().from(routes).orderBy(desc(routes.createdAt));
-      return allRoutes;
+      const result = await pool.query(`
+        SELECT id, name, description, start_location, end_location, 
+               waypoints, frequency, status, created_by, created_at 
+        FROM routes 
+        ORDER BY created_at DESC
+      `);
+      return result.rows.map(row => this.mapRowToRoute(row));
     } catch (error) {
       console.error('Error in getAllRoutes:', error);
       return [];
