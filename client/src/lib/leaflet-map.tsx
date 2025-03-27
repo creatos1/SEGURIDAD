@@ -37,13 +37,14 @@ export default function LeafletMap({
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
   const routesRef = useRef<L.Polyline[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const container = document.getElementById(id);
-    if (!container) return;
+    if (!containerRef.current) return;
 
+    // Initialize map if it doesn't exist
     if (!mapRef.current) {
-      const map = L.map(container).setView(center, zoom);
+      const map = L.map(containerRef.current).setView(center, zoom);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
@@ -64,7 +65,7 @@ export default function LeafletMap({
         mapRef.current = null;
       }
     };
-  }, [id, center, zoom]);
+  }, [center, zoom, onClick]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -105,6 +106,10 @@ export default function LeafletMap({
   }, [routes]);
 
   return (
-    <div id={id} className={`${className} w-full h-full min-h-[400px]`} />
+    <div 
+      ref={containerRef}
+      id={id} 
+      className={`${className} w-full h-full min-h-[400px]`}
+    />
   );
 }
