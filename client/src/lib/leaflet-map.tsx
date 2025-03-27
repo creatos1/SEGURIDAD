@@ -1,4 +1,5 @@
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -17,7 +18,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 interface Marker {
   position: [number, number];
-  type: 'driver' | 'stop' | 'current';
+  type?: 'driver' | 'stop' | 'current';
   popup?: string;
 }
 
@@ -28,7 +29,6 @@ interface Route {
 }
 
 interface LeafletMapProps {
-  id: string;
   center: [number, number];
   zoom: number;
   markers?: Marker[];
@@ -37,8 +37,18 @@ interface LeafletMapProps {
   onClick?: (lat: number, lng: number) => void;
 }
 
+function MapEvents({ onClick }: { onClick?: (lat: number, lng: number) => void }) {
+  useMapEvents({
+    click: (e) => {
+      if (onClick) {
+        onClick(e.latlng.lat, e.latlng.lng);
+      }
+    },
+  });
+  return null;
+}
+
 export default function LeafletMap({
-  id,
   center,
   zoom,
   markers = [],
@@ -48,24 +58,23 @@ export default function LeafletMap({
 }: LeafletMapProps) {
   return (
     <MapContainer 
-      id={id}
       center={center}
       zoom={zoom} 
       className={`${className} w-full h-full min-h-[400px]`}
-      onClick={(e: any) => onClick?.(e.latlng.lat, e.latlng.lng)}
     >
+      <MapEvents onClick={onClick} />
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='© OpenStreetMap contributors'
       />
 
-      {markers.map((marker, index) => (
+      {markers?.map((marker, index) => (
         <Marker key={index} position={marker.position}>
           {marker.popup && <Popup>{marker.popup}</Popup>}
         </Marker>
       ))}
 
-      {routes.map((route, index) => (
+      {routes?.map((route, index) => (
         <Polyline
           key={index}
           positions={route.path}
