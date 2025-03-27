@@ -10,6 +10,7 @@ import DashboardPage from "@/pages/dashboard-page";
 import SettingsPage from "@/pages/settings-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import TourGuide from "./components/onboarding/tours";
+import RoutesPage from "@/pages/routes"; // Added import
 
 function Router() {
   return (
@@ -17,7 +18,7 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       <ProtectedRoute path="/" component={DashboardPage} />
       <ProtectedRoute path="/settings" component={SettingsPage} />
-      <ProtectedRoute path="/routes" component={RoutesPage} />
+      <ProtectedRoute path="/routes" component={RoutesPage} /> {/* Added route */}
       <Route component={NotFound} />
     </Switch>
   );
