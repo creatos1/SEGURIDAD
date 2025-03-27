@@ -30,9 +30,9 @@ export default function RouteCreator() {
     queryKey: ['/api/routes'],
   });
 
-  const handleMapClick = useCallback((e: { latlng: { lat: number; lng: number } }) => {
+  const handleMapClick = useCallback((lat: number, lng: number) => {
     if (!isDrawing) return;
-    setCoordinates(prev => [...prev, [e.latlng.lat, e.latlng.lng]]);
+    setCoordinates(prev => [...prev, [lat, lng]]);
   }, [isDrawing]);
 
   const handleSave = async () => {

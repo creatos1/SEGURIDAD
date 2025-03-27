@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -22,7 +21,7 @@ interface LeafletMapProps {
   markers?: Marker[];
   routes?: Route[];
   className?: string;
-  onClick?: (latlng: [number, number]) => void;
+  onClick?: (lat: number, lng: number) => void;
 }
 
 export default function LeafletMap({
@@ -45,14 +44,14 @@ export default function LeafletMap({
     // Initialize map if it doesn't exist
     if (!mapRef.current) {
       const map = L.map(containerRef.current).setView(center, zoom);
-      
+
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
       if (onClick) {
         map.on('click', (e) => {
-          onClick([e.latlng.lat, e.latlng.lng]);
+          onClick(e.latlng.lat, e.latlng.lng);
         });
       }
 
