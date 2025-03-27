@@ -559,7 +559,6 @@ export class DatabaseStorage implements IStorage {
     } finally {
       client.release();
     }
-    }
   }
 
   async getAllRoutes(): Promise<Route[]> {
