@@ -1,6 +1,19 @@
-import { useEffect, useRef } from 'react';
-import L from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix for default marker icons
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41]
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
 
 interface Marker {
   position: [number, number];
@@ -33,81 +46,35 @@ export default function LeafletMap({
   className = "",
   onClick
 }: LeafletMapProps) {
-  const mapRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<L.Marker[]>([]);
-  const routesRef = useRef<L.Polyline[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Initialize map if it doesn't exist
-    if (!mapRef.current) {
-      const map = L.map(containerRef.current).setView(center, zoom);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
-
-      if (onClick) {
-        map.on('click', (e) => {
-          onClick(e.latlng.lat, e.latlng.lng);
-        });
-      }
-
-      mapRef.current = map;
-    }
-
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
-    };
-  }, [center, zoom, onClick]);
-
-  useEffect(() => {
-    if (!mapRef.current || !markers) return;
-
-    // Clear existing markers
-    markersRef.current.forEach(marker => marker.remove());
-    markersRef.current = [];
-
-    // Add new markers
-    markers.forEach(marker => {
-      const newMarker = L.marker(marker.position).addTo(mapRef.current!); //Removed conditional icons as they were not defined
-
-      if (marker.popup) {
-        newMarker.bindPopup(marker.popup);
-      }
-
-      markersRef.current.push(newMarker);
-    });
-  }, [markers]);
-
-  useEffect(() => {
-    if (!mapRef.current || !routes) return;
-
-    // Clear existing routes
-    routesRef.current.forEach(route => route.remove());
-    routesRef.current = [];
-
-    // Add new routes
-    routes.forEach(route => {
-      const polyline = L.polyline(route.path, {
-        color: route.color || '#FF0000',
-        weight: route.weight || 3
-      }).addTo(mapRef.current!);
-
-      routesRef.current.push(polyline);
-    });
-  }, [routes]);
-
   return (
-    <div 
-      ref={containerRef}
-      id={id} 
+    <MapContainer 
+      id={id}
+      center={center}
+      zoom={zoom} 
       className={`${className} w-full h-full min-h-[400px]`}
-    />
+      onClick={(e: any) => onClick?.(e.latlng.lat, e.latlng.lng)}
+    >
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='© OpenStreetMap contributors'
+      />
+
+      {markers.map((marker, index) => (
+        <Marker key={index} position={marker.position}>
+          {marker.popup && <Popup>{marker.popup}</Popup>}
+        </Marker>
+      ))}
+
+      {routes.map((route, index) => (
+        <Polyline
+          key={index}
+          positions={route.path}
+          pathOptions={{
+            color: route.color || '#FF0000',
+            weight: route.weight || 3
+          }}
+        />
+      ))}
+    </MapContainer>
   );
 }
