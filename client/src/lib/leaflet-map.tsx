@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -38,9 +39,12 @@ export default function LeafletMap({
   const routesRef = useRef<L.Polyline[]>([]);
 
   useEffect(() => {
-    if (!mapRef.current) {
-      const map = L.map(id).setView(center, zoom);
+    const container = document.getElementById(id);
+    if (!container) return;
 
+    if (!mapRef.current) {
+      const map = L.map(container).setView(center, zoom);
+      
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
@@ -60,7 +64,7 @@ export default function LeafletMap({
         mapRef.current = null;
       }
     };
-  }, [id]);
+  }, [id, center, zoom]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -100,5 +104,7 @@ export default function LeafletMap({
     });
   }, [routes]);
 
-  return <div id={id} className={`${className} w-full h-full`} />;
+  return (
+    <div id={id} className={`${className} w-full h-full min-h-[400px]`} />
+  );
 }
