@@ -4,12 +4,13 @@ import {
   type DriverRating, type InsertDriverRating, type LocationUpdate, type InsertLocationUpdate,
   UserRole
 } from "@shared/schema";
-import { pool } from "./db";
+import { db } from "./db";
 import * as expressSession from "express-session";
 // @ts-ignore
 import pgPkg from "connect-pg-simple";
 const connectPgSimple = pgPkg;
 import createMemoryStore from "memorystore";
+import { eq } from "drizzle-orm";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { eq, and, desc } from "drizzle-orm";
@@ -203,8 +204,10 @@ export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: number): Promise<User | undefined> {
     try {
-      const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
-      return result.rows.length > 0 ? this.mapRowToUser(result.rows[0]) : undefined;
+      const result = await db.query.users.findFirst({
+        where: (users, { eq }) => eq(users.id, id)
+      });
+      return result ? this.mapRowToUser(result) : undefined;
     } catch (error) {
       console.error('Error in getUser:', error);
       return undefined;
@@ -213,8 +216,10 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     try {
-      const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-      return result.rows.length > 0 ? this.mapRowToUser(result.rows[0]) : undefined;
+      const result = await db.query.users.findFirst({
+        where: (users, { eq }) => eq(users.username, username)
+      });
+      return result ? this.mapRowToUser(result) : undefined;
     } catch (error) {
       console.error('Error in getUserByUsername:', error);
       return undefined;
@@ -226,7 +231,7 @@ export class DatabaseStorage implements IStorage {
       const result = await db.query.users.findFirst({
         where: (users, { eq }) => eq(users.email, email)
       });
-      return result.rows.length > 0 ? this.mapRowToUser(result.rows[0]) : undefined;
+      return result ? this.mapRowToUser(result) : undefined;
     } catch (error) {
       console.error('Error in getUserByEmail:', error);
       return undefined;
