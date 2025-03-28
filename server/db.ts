@@ -15,9 +15,8 @@ const createConnection = () => {
   });
 };
 
-let queryClient = createConnection();
-
-export const db = drizzle(queryClient, { schema });
+export const pool = createConnection();
+export const db = drizzle(pool, { schema });
 
 // Reconexión automática
 queryClient.on('error', async (err) => {
