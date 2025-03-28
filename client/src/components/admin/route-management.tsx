@@ -8,17 +8,44 @@ import { useApi } from '@/hooks/use-api';
 import type { Route } from '@shared/schema';
 
 export default function RouteManagement() {
-  const [routes, setRoutes] = useState<Route[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const { get, del } = useApi();
+  const [editingRoute, setEditingRoute] = useState(null);
+  const [selectedVehicles, setSelectedVehicles] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+  const { get, post, put, del } = useApi();
+  const [routes, setRoutes] = useState([]);
 
   useEffect(() => {
     loadRoutes();
+    loadVehicles();
   }, []);
 
   const loadRoutes = async () => {
     const data = await get<Route[]>('/api/routes');
     if (data) setRoutes(data);
+  };
+
+  const loadVehicles = async () => {
+    const data = await get('/api/vehicles');
+    if (data) setVehicles(data);
+  };
+
+  const handleEdit = (route) => {
+    setEditingRoute(route);
+    setSelectedVehicles(route.vehicles || []);
+    setIsCreateModalOpen(true);
+  };
+
+  const handleSave = async (routeData) => {
+    const payload = { ...routeData, vehicles: selectedVehicles };
+    if (editingRoute) {
+      await put(`/api/routes/${editingRoute.id}`, payload);
+    } else {
+      await post('/api/routes', payload);
+    }
+    setIsCreateModalOpen(false);
+    setEditingRoute(null);
+    loadRoutes();
   };
 
   const handleDelete = async (id: number) => {
@@ -49,9 +76,10 @@ export default function RouteManagement() {
               <div>
                 <h3 className="font-semibold">{route.name}</h3>
                 <p className="text-sm text-gray-500">{route.description}</p>
+                <p>Vehicles: {route.vehicles?.map(v => v.id).join(', ') || 'None'}</p>
               </div>
               <div className="flex gap-2">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" onClick={() => handleEdit(route)}>
                   <Edit className="h-4 w-4" />
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => handleDelete(route.id)}>
@@ -66,12 +94,15 @@ export default function RouteManagement() {
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Route</DialogTitle>
+            <DialogTitle>{editingRoute ? 'Edit Route' : 'Create New Route'}</DialogTitle>
           </DialogHeader>
-          <RouteCreator onSuccess={() => {
-            setIsCreateModalOpen(false);
-            loadRoutes();
-          }} />
+          <RouteCreator 
+            vehicles={vehicles} 
+            selectedVehicles={selectedVehicles} 
+            setSelectedVehicles={setSelectedVehicles}
+            onSave={handleSave} 
+            initialRoute={editingRoute}
+            onCancel={() => setIsCreateModalOpen(false)} />
         </DialogContent>
       </Dialog>
     </div>
