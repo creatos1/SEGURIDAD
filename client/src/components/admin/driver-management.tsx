@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Plus, Edit, Trash, Star } from 'lucide-react';
+import { Plus, Edit, Trash, Star, Home } from 'lucide-react'; // Added Home import
 import { Card } from '../ui/card';
 import { useApi } from '@/hooks/use-api';
 import type { User } from '@shared/schema';
@@ -22,9 +22,9 @@ export default function DriverManagement() {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Driver Management</h1>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Driver
+        <Button variant="outline" onClick={() => window.location.replace('/')}> {/* Corrected onClick and added variant */}
+          <Home className="h-4 w-4 mr-2" />
+          Home
         </Button>
       </div>
 

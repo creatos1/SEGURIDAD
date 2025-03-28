@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Plus, Edit, Trash } from 'lucide-react';
+import { Plus, Edit, Trash, Home } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import RouteCreator from './route-creator';
@@ -35,6 +35,10 @@ export default function RouteManagement() {
         <Button onClick={() => setIsCreateModalOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Create Route
+        </Button>
+        <Button variant="outline" onClick={() => window.location.replace('/')}>
+          <Home className="h-4 w-4 mr-2" />
+          Home
         </Button>
       </div>
 
