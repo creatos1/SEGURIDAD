@@ -223,7 +223,9 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     try {
-      const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+      const result = await db.query.users.findFirst({
+        where: (users, { eq }) => eq(users.email, email)
+      });
       return result.rows.length > 0 ? this.mapRowToUser(result.rows[0]) : undefined;
     } catch (error) {
       console.error('Error in getUserByEmail:', error);
