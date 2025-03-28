@@ -101,12 +101,9 @@ export class DatabaseStorage implements IStorage {
   sessionStore: any; // Using 'any' type for session store
 
   constructor() {
-    // Inicializar session store con PostgreSQL
-    const PostgresStore = connectPgSimple(expressSession.default);
-
-    this.sessionStore = new PostgresStore({
-      pool: pool,
-      createTableIfMissing: true
+    // Inicializar session store con memoria para desarrollo
+    this.sessionStore = new MemoryStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
     });
   }
 
