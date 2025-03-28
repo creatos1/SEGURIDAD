@@ -116,6 +116,15 @@ export default function Sidebar() {
                 Administration
               </p>
               <nav>
+                <div>
+                  <NavItem 
+                    href="/" 
+                    label="Home" 
+                    icon={<Home size={18} />} 
+                    active={location === '/'} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
                 <div data-tour="admin-dashboard">
                   <NavItem 
                     href="/" 
@@ -172,6 +181,15 @@ export default function Sidebar() {
                 User Menu
               </p>
               <nav>
+                <div>
+                  <NavItem 
+                    href="/" 
+                    label="Home" 
+                    icon={<Home size={18} />} 
+                    active={location === '/'} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
                 <div data-tour="user-routes">
                   <NavItem 
                     href="/" 
@@ -219,6 +237,15 @@ export default function Sidebar() {
                 Driver Menu
               </p>
               <nav>
+                <div>
+                  <NavItem 
+                    href="/" 
+                    label="Home" 
+                    icon={<Home size={18} />} 
+                    active={location === '/'} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                </div>
                 <div data-tour="driver-route">
                   <NavItem 
                     href="/" 
