@@ -1,28 +1,44 @@
-import pkg from 'pg';
-const { Pool } = pkg;
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
 import * as schema from "@shared/schema";
 
-// Create a PostgreSQL pool
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL?.replace('.us-east-2', '-pooler.us-east-2'),
-  ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 10000,
-  query_timeout: 20000,
-  statement_timeout: 20000,
-  idle_in_transaction_session_timeout: 20000,
-  max: 10,
-  min: 2,
-  idleTimeoutMillis: 120000,
-  retries: 5
+const createConnection = () => {
+  return postgres(process.env.DATABASE_URL!, {
+    max: 1,
+    ssl: 'require',
+    idle_timeout: 20,
+    max_lifetime: 60 * 30,
+    connection: {
+      timeout: 10
+    }
+  });
+};
+
+let queryClient = createConnection();
+
+export const db = drizzle(queryClient, { schema });
+
+// Reconexión automática
+queryClient.on('error', async (err) => {
+  console.error('Database connection error:', err);
+  try {
+    await queryClient.end();
+    queryClient = createConnection();
+    console.log('Database reconnected successfully');
+  } catch (error) {
+    console.error('Failed to reconnect:', error);
+  }
 });
+
 
 // Function to initialize the database
 export async function initializeDatabase() {
-  const client = await pool.connect();
-  
+  const client = await queryClient.connect();
+
   try {
     console.log("Inicializando base de datos...");
-    
+
     // Verificar si existen las tablas
     const checkTableExists = async (tableName) => {
       const result = await client.query(`
@@ -33,9 +49,9 @@ export async function initializeDatabase() {
         )`, [tableName]);
       return result.rows[0].exists;
     };
-    
+
     // Crear las tablas necesarias si no existen
-    
+
     // Tabla users
     if (!await checkTableExists('users')) {
       console.log("Creando tabla users...");
@@ -52,7 +68,7 @@ export async function initializeDatabase() {
         )
       `);
     }
-    
+
     // Tabla vehicles
     if (!await checkTableExists('vehicles')) {
       console.log("Creando tabla vehicles...");
@@ -70,7 +86,7 @@ export async function initializeDatabase() {
         )
       `);
     }
-    
+
     // Tabla routes
     if (!await checkTableExists('routes')) {
       console.log("Creando tabla routes...");
@@ -89,7 +105,7 @@ export async function initializeDatabase() {
         )
       `);
     }
-    
+
     // Tabla route_stops
     if (!await checkTableExists('route_stops')) {
       console.log("Creando tabla route_stops...");
@@ -105,7 +121,7 @@ export async function initializeDatabase() {
         )
       `);
     }
-    
+
     // Tabla assignments
     if (!await checkTableExists('assignments')) {
       console.log("Creando tabla assignments...");
@@ -122,7 +138,7 @@ export async function initializeDatabase() {
         )
       `);
     }
-    
+
     // Tabla driver_ratings
     if (!await checkTableExists('driver_ratings')) {
       console.log("Creando tabla driver_ratings...");
@@ -138,7 +154,7 @@ export async function initializeDatabase() {
         )
       `);
     }
-    
+
     // Tabla location_updates
     if (!await checkTableExists('location_updates')) {
       console.log("Creando tabla location_updates...");
@@ -155,44 +171,44 @@ export async function initializeDatabase() {
         )
       `);
     }
-    
+
     // Verificar si existen usuarios en la BD
     const usersResult = await client.query('SELECT * FROM users');
     const users = usersResult.rows;
-    
+
     if (users.length === 0) {
       console.log("No se encontraron usuarios, creando usuarios por defecto...");
-      
+
       // Crear usuario administrador
       await client.query(`
         INSERT INTO users (username, email, password, role, full_name) 
         VALUES ('admin', 'admin@transitpro.com', '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', 'admin', 'Admin User')
       `);
-      
+
       // Crear usuario normal
       await client.query(`
         INSERT INTO users (username, email, password, role, full_name) 
         VALUES ('user', 'user@example.com', '$2b$10$//S6uA4Qe./bZOp6PcWJ9eUOdlDrADjaM1JrybQOPZxkyFHi.kGdy', 'user', 'Regular User')
       `);
-      
+
       // Crear usuario conductor
       await client.query(`
         INSERT INTO users (username, email, password, role, full_name) 
         VALUES ('driver', 'driver@transitpro.com', '$2b$10$jmXg2oNxYrwHgdMGPBIp5uh1fJXMwSKpTCxP8WdUgPGCNhXZZkAEW', 'driver', 'Carlos Mendez')
       `);
-      
+
       console.log("Usuarios por defecto creados");
     } else {
       console.log(`Se encontraron ${users.length} usuarios en la base de datos`);
     }
-    
+
     // Verificar si existen rutas en la BD
     const routesResult = await client.query('SELECT * FROM routes');
     const routes = routesResult.rows;
-    
+
     if (routes.length === 0) {
       console.log("No se encontraron rutas, creando rutas de ejemplo...");
-      
+
       // Crear rutas de ejemplo
       const route1Result = await client.query(`
         INSERT INTO routes (name, status, description, start_location, end_location, waypoints, frequency, created_by) 
@@ -200,17 +216,17 @@ export async function initializeDatabase() {
         ARRAY['Estación Central', 'Plaza Mayor', 'Hospital General'], 15, 1)
         RETURNING id
       `);
-      
+
       const route2Result = await client.query(`
         INSERT INTO routes (name, status, description, start_location, end_location, waypoints, frequency, created_by) 
         VALUES ('Ruta Este-Oeste', 'active', 'Ruta que conecta los barrios del este con el centro comercial oeste', 'Terminal Este', 'Centro Comercial Oeste', 
         ARRAY['Parque Industrial', 'Universidad', 'Mercado Central'], 20, 1)
         RETURNING id
       `);
-      
+
       const route1Id = route1Result.rows[0].id;
       const route2Id = route2Result.rows[0].id;
-      
+
       // Crear paradas para las rutas
       if (route1Id) {
         await client.query(`
@@ -222,7 +238,7 @@ export async function initializeDatabase() {
           ('Terminal Sur', $1, 'Av. Sur 321', '06:50', '07:00', 5)
         `, [route1Id]);
       }
-      
+
       if (route2Id) {
         await client.query(`
           INSERT INTO route_stops (name, route_id, location, arrival_time, departure_time, "order") VALUES
@@ -233,43 +249,43 @@ export async function initializeDatabase() {
           ('Centro Comercial Oeste', $1, 'Av. Oeste 432', '08:00', '08:10', 5)
         `, [route2Id]);
       }
-      
+
       console.log("Rutas y paradas de ejemplo creadas");
     } else {
       console.log(`Se encontraron ${routes.length} rutas en la base de datos`);
     }
-    
+
     // Verificar si existen vehículos en la BD
     const vehiclesResult = await client.query('SELECT * FROM vehicles');
     const vehicles = vehiclesResult.rows;
-    
+
     if (vehicles.length === 0) {
       console.log("No se encontraron vehículos, creando vehículos de ejemplo...");
-      
+
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      
+
       const sixtyDaysLater = new Date();
       sixtyDaysLater.setDate(sixtyDaysLater.getDate() + 60);
-      
+
       const fifteenDaysAgo = new Date();
       fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
-      
+
       const seventyFiveDaysLater = new Date();
       seventyFiveDaysLater.setDate(seventyFiveDaysLater.getDate() + 75);
-      
+
       const tenDaysAgo = new Date();
       tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-      
+
       const eightyDaysLater = new Date();
       eightyDaysLater.setDate(eightyDaysLater.getDate() + 80);
-      
+
       const ninetyDaysAgo = new Date();
       ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-      
+
       const fiveDaysLater = new Date();
       fiveDaysLater.setDate(fiveDaysLater.getDate() + 5);
-      
+
       // Crear vehículos de ejemplo
       await client.query(`
         INSERT INTO vehicles (vehicle_number, vehicle_type, capacity, status, fuel_status, last_maintenance, next_maintenance) VALUES
@@ -278,42 +294,42 @@ export async function initializeDatabase() {
         ('MIN-001', 'Minibus', 25, 'active', 90, $5, $6),
         ('MIN-002', 'Minibus', 25, 'maintenance', 50, $7, $8)
       `, [thirtyDaysAgo, sixtyDaysLater, fifteenDaysAgo, seventyFiveDaysLater, tenDaysAgo, eightyDaysLater, ninetyDaysAgo, fiveDaysLater]);
-      
+
       console.log("Vehículos de ejemplo creados");
     } else {
       console.log(`Se encontraron ${vehicles.length} vehículos en la base de datos`);
     }
-    
+
     // Verificar si existen asignaciones en la BD
     const assignmentsResult = await client.query('SELECT * FROM assignments');
     const assignments = assignmentsResult.rows;
-    
+
     if (assignments.length === 0) {
       console.log("No se encontraron asignaciones, creando asignaciones de ejemplo...");
-      
+
       const driversResult = await client.query("SELECT id FROM users WHERE role = 'driver'");
       const drivers = driversResult.rows;
-      
+
       if (drivers.length > 0) {
         const routesDataResult = await client.query("SELECT id FROM routes LIMIT 1");
         const vehiclesDataResult = await client.query("SELECT id FROM vehicles WHERE status = 'active' LIMIT 1");
-        
+
         const routesData = routesDataResult.rows;
         const vehiclesData = vehiclesDataResult.rows;
-        
+
         if (routesData.length > 0 && vehiclesData.length > 0) {
           await client.query(`
             INSERT INTO assignments (route_id, driver_id, vehicle_id, start_time, status)
             VALUES ($1, $2, $3, CURRENT_TIMESTAMP, 'in-progress')
           `, [routesData[0].id, drivers[0].id, vehiclesData[0].id]);
-          
+
           console.log("Asignaciones de ejemplo creadas");
         }
       }
     } else {
       console.log(`Se encontraron ${assignments.length} asignaciones en la base de datos`);
     }
-    
+
     console.log("Inicialización de la base de datos completada");
   } catch (error) {
     console.error("Error al inicializar la base de datos:", error);
