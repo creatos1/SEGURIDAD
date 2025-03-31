@@ -4,6 +4,8 @@ import {
   type DriverRating, type InsertDriverRating, type LocationUpdate, type InsertLocationUpdate,
   UserRole
 } from "@shared/schema";
+import { createPool } from 'mysql2/promise';
+
 import { db } from "./db";
 import * as expressSession from "express-session";
 // @ts-ignore
