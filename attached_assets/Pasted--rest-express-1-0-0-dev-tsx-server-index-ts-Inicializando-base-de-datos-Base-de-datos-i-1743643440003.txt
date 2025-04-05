@@ -1,0 +1,70 @@
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+Inicializando base de datos...
+Base de datos inicializada correctamente
+Base de datos inicializada correctamente
+1:21:20 AM [express] serving on port 5000
+1:21:28 AM [express] GET /api/user 401 in 3ms
+1:22:57 AM [express] POST /api/login 200 in 7ms :: {"id":4,"username":"admin","email":"admin@transit…
+Error in getActiveRoutes: SqliteError: no such table: routes
+    at Database.prepare (/home/runner/workspace/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at BetterSQLiteSession.prepareQuery (/home/runner/workspace/node_modules/src/better-sqlite3/session.ts:50:28)
+    at BetterSQLiteSession.prepareOneTimeQuery (/home/runner/workspace/node_modules/src/sqlite-core/session.ts:135:15)
+    at SQLiteSelectBase._prepare (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:865:85)
+    at SQLiteSelectBase.all (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:884:15)
+    at SQLiteSelectBase.execute (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:896:15)
+    at SQLiteSelectBase.then (/home/runner/workspace/node_modules/src/query-promise.ts:31:15) {
+  code: 'SQLITE_ERROR'
+}
+Error in getActiveVehicles: SqliteError: no such table: vehicles
+    at Database.prepare (/home/runner/workspace/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at BetterSQLiteSession.prepareQuery (/home/runner/workspace/node_modules/src/better-sqlite3/session.ts:50:28)
+    at BetterSQLiteSession.prepareOneTimeQuery (/home/runner/workspace/node_modules/src/sqlite-core/session.ts:135:15)
+    at SQLiteSelectBase._prepare (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:865:85)
+    at SQLiteSelectBase.all (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:884:15)
+    at SQLiteSelectBase.execute (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:896:15)
+    at SQLiteSelectBase.then (/home/runner/workspace/node_modules/src/query-promise.ts:31:15) {
+  code: 'SQLITE_ERROR'
+}
+1:22:57 AM [express] GET /api/stats 200 in 15ms :: {"activeRoutesCount":0,"activeVehiclesCount":0,"d…
+Error in getAllRoutes: SqliteError: no such table: routes
+    at Database.prepare (/home/runner/workspace/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at BetterSQLiteSession.prepareQuery (/home/runner/workspace/node_modules/src/better-sqlite3/session.ts:50:28)
+    at BetterSQLiteSession.prepareOneTimeQuery (/home/runner/workspace/node_modules/src/sqlite-core/session.ts:135:15)
+    at SQLiteSelectBase._prepare (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:865:85)
+    at SQLiteSelectBase.all (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:884:15)
+    at SQLiteSelectBase.execute (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:896:15)
+    at SQLiteSelectBase.then (/home/runner/workspace/node_modules/src/query-promise.ts:31:15) {
+  code: 'SQLITE_ERROR'
+}
+1:22:57 AM [express] GET /api/routes 304 in 2ms :: []
+1:22:57 AM [express] GET /api/users 200 in 3ms :: [{"id":1,"username":"admin@transitpro.com","email"…
+Error in getAllRoutes: SqliteError: no such table: routes
+    at Database.prepare (/home/runner/workspace/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at BetterSQLiteSession.prepareQuery (/home/runner/workspace/node_modules/src/better-sqlite3/session.ts:50:28)
+    at BetterSQLiteSession.prepareOneTimeQuery (/home/runner/workspace/node_modules/src/sqlite-core/session.ts:135:15)
+    at SQLiteSelectBase._prepare (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:865:85)
+    at SQLiteSelectBase.all (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:884:15)
+    at SQLiteSelectBase.execute (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:896:15)
+    at SQLiteSelectBase.then (/home/runner/workspace/node_modules/src/query-promise.ts:31:15) {
+  code: 'SQLITE_ERROR'
+}
+1:22:59 AM [express] GET /api/routes 304 in 4ms :: []
+Error in getAllVehicles: SqliteError: no such table: vehicles
+    at Database.prepare (/home/runner/workspace/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at BetterSQLiteSession.prepareQuery (/home/runner/workspace/node_modules/src/better-sqlite3/session.ts:50:28)
+    at BetterSQLiteSession.prepareOneTimeQuery (/home/runner/workspace/node_modules/src/sqlite-core/session.ts:135:15)
+    at SQLiteSelectBase._prepare (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:865:85)
+    at SQLiteSelectBase.all (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:884:15)
+    at SQLiteSelectBase.execute (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:896:15)
+    at SQLiteSelectBase.then (/home/runner/workspace/node_modules/src/query-promise.ts:31:15) {
+  code: 'SQLITE_ERROR'
+}
+1:22:59 AM [express] GET /api/vehicles 304 in 4ms :: []
+1:23:00 AM [express] GET /api/users 200 in 3ms :: [{"id":6,"username":"driver","email":"driver@trans…
+1:23:17 AM [express] POST /api/users 200 in 17ms
+1:23:26 AM [express] GET /api/user 200 in 1ms :: {"id":4,"username":"admin","email":"admin@transitpr…
+1:23:26 AM [express] GET /api/users 304 in 1ms :: [{"id":6,"username":"driver","email":"driver@trans…
+1:23:45 AM [express] PUT /api/users/6 200 in 5ms

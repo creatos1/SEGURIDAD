@@ -1,0 +1,42 @@
+~/workspace$ npm run build --verbose
+npm verbose cli /nix/store/wfxq6w9bkp5dcfr8yb6789b0w7128gnb-nodejs-20.18.1/bin/node /nix/store/wfxq6w9bkp5dcfr8yb6789b0w7128gnb-nodejs-20.18.1/bin/npm
+npm info using npm@10.8.2
+npm info using node@v20.18.1
+npm verbose title npm run build
+npm verbose argv "run" "build" "--loglevel" "verbose"
+npm verbose logfile logs-max:10 dir:/home/runner/.npm/_logs/2025-04-03T00_32_12_329Z-
+npm verbose logfile /home/runner/.npm/_logs/2025-04-03T00_32_12_329Z-debug-0.log
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.14 building for production...
+transforming (3) src/main.tsxBrowserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2245 modules transformed.
+x Build failed in 10.31s
+error during build:
+shared/schema.ts (1:58): "timestamp" is not exported by "node_modules/drizzle-orm/sqlite-core/index.js", imported by "shared/schema.ts".
+file: /home/runner/workspace/shared/schema.ts:1:58
+
+1: import { sqliteTable as table, text, integer, blob, real, timestamp } from "drizzle-orm/sqlite-core";
+                                                             ^
+2: import { sql } from "drizzle-orm";
+
+    at getRollupError (file:///home/runner/workspace/node_modules/rollup/dist/es/shared/parseAst.js:396:41)
+    at error (file:///home/runner/workspace/node_modules/rollup/dist/es/shared/parseAst.js:392:42)
+    at Module.error (file:///home/runner/workspace/node_modules/rollup/dist/es/shared/node-entry.js:15588:16)
+    at Module.traceVariable (file:///home/runner/workspace/node_modules/rollup/dist/es/shared/node-entry.js:16037:29)
+    at ModuleScope.findVariable (file:///home/runner/workspace/node_modules/rollup/dist/es/shared/node-entry.js:13820:39)
+    at Identifier.bind (file:///home/runner/workspace/node_modules/rollup/dist/es/shared/node-entry.js:5066:40)
+    at CallExpression.bind (file:///home/runner/workspace/node_modules/rollup/dist/es/shared/node-entry.js:2653:23)
+    at CallExpression.bind (file:///home/runner/workspace/node_modules/rollup/dist/es/shared/node-entry.js:11284:15)
+    at MemberExpression.bind (file:///home/runner/workspace/node_modules/rollup/dist/es/shared/node-entry.js:2653:23)
+    at MemberExpression.bind (file:///home/runner/workspace/node_modules/rollup/dist/es/shared/node-entry.js:6937:19)
+npm verbose cwd /home/runner/workspace
+npm verbose os Linux 6.2.16
+npm verbose node v20.18.1
+npm verbose npm  v10.8.2
+npm verbose exit 1
+npm verbose code 1

@@ -1,0 +1,42 @@
+The above error occurred in the <LeafletMap> component:
+
+    at LeafletMap (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/lib/leaflet-map.tsx:31:3)
+    at div
+    at div
+    at div
+    at div
+    at div
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RLTE5R7I.js?v=0216d858:41:13
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-54SOGMOD.js?v=0216d858:59:7
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-UACHJROW.js?v=0216d858:52:11
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-UACHJROW.js?v=0216d858:33:11
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RLTE5R7I.js?v=0216d858:41:13
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-HNAA5AYG.js?v=0216d858:29:5
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=0216d858:234:13
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=0216d858:157:58
+    at Presence (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-CJ52NQAI.js?v=0216d858:24:11)
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=0216d858:148:64
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-UACHJROW.js?v=0216d858:52:11
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-UACHJROW.js?v=0216d858:33:11
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RLTE5R7I.js?v=0216d858:41:13
+    at https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-54SOGMOD.js?v=0216d858:258:22
+    at Presence (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-CJ52NQAI.js?v=0216d858:24:11)
+    at Provider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-YRL5WAL7.js?v=0216d858:38:15)
+    at DialogPortal (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=0216d858:111:11)
+    at _c3 (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/components/ui/dialog.tsx:51:12)
+    at Provider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-YRL5WAL7.js?v=0216d858:38:15)
+    at Dialog (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=0216d858:52:5)
+    at div
+    at div
+    at RouteCreator (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/components/admin/route-creator.tsx:35:21)
+    at div
+    at RoutesPage (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/pages/routes-page.tsx:24:39)
+    at Route (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0216d858:323:16)
+    at ProtectedRoute (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/lib/protected-route.tsx:22:3)
+    at Switch (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0216d858:379:17)
+    at Router
+    at TourProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/hooks/use-tour.tsx:22:32)
+    at AuthProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/src/hooks/use-auth.tsx:27:32)
+    at QueryClientProvider (https://c68fea1e-dd36-44d2-a7aa-750903cffd0a-00-12oozchbmb47h.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=0216d858:2805:3)
+ …
+Map container not found.

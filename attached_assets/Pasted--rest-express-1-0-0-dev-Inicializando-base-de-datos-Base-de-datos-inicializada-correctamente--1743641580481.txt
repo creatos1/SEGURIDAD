@@ -1,0 +1,59 @@
+> rest-express@1.0.0 dev
+Inicializando base de datos...
+Base de datos inicializada correctamente
+Base de datos inicializada correctamente
+Re-optimizing dependencies because lockfile has changed
+12:51:57 AM [express] serving on port 5000
+12:52:09 AM [express] GET /api/user 401 in 2ms
+Error in getUserByEmail: TypeError: Cannot read properties of undefined (reading 'findFirst')
+    at DatabaseStorage.getUserByEmail (/home/runner/workspace/server/storage.ts:245:43)
+    at Strategy._verify (/home/runner/workspace/server/auth.ts:86:36)
+    at Strategy.authenticate (/home/runner/workspace/node_modules/passport-local/lib/strategy.js:90:12)
+    at attempt (/home/runner/workspace/node_modules/passport/lib/middleware/authenticate.js:378:16)
+    at authenticate (/home/runner/workspace/node_modules/passport/lib/middleware/authenticate.js:379:7)
+    at <anonymous> (/home/runner/workspace/server/auth.ts:161:6)
+    at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/runner/workspace/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+    at /home/runner/workspace/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+    at strategy.pass (/home/runner/workspace/node_modules/passport/lib/middleware/authenticate.js:355:9)
+    at SessionStrategy.authenticate (/home/runner/workspace/node_modules/passport/lib/strategies/session.js:126:10)
+    at attempt (/home/runner/workspace/node_modules/passport/lib/middleware/authenticate.js:378:16)
+    at authenticate (/home/runner/workspace/node_modules/passport/lib/middleware/authenticate.js:379:7)
+    at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/runner/workspace/node_modules/express/lib/router/index.js:328:13)
+    at /home/runner/workspace/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+    at initialize (/home/runner/workspace/node_modules/passport/lib/middleware/initialize.js:98:5)
+    at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/runner/workspace/node_modules/express/lib/router/index.js:328:13)
+    at /home/runner/workspace/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+    at session (/home/runner/workspace/node_modules/express-session/index.js:487:7)
+    at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/runner/workspace/node_modules/express/lib/router/index.js:328:13)
+    at /home/runner/workspace/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+    at <anonymous> (/home/runner/workspace/server/index.ts:42:3)
+    at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/runner/workspace/node_modules/express/lib/router/index.js:328:13)
+    at /home/runner/workspace/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+    at cors (/home/runner/workspace/node_modules/cors/lib/index.js:188:7)
+    at /home/runner/workspace/node_modules/cors/lib/index.js:224:17
+    at originCallback (/home/runner/workspace/node_modules/cors/lib/index.js:214:15)
+    at /home/runner/workspace/node_modules/cors/lib/index.js:219:13
+    at optionsCallback (/home/runner/workspace/node_modules/cors/lib/index.js:199:9)
+    at corsMiddleware (/home/runner/workspace/node_modules/cors/lib/index.js:204:7)
+    at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/runner/workspace/node_modules/express/lib/router/index.js:328:13)
+    at /home/runner/workspace/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+12:52:48 AM [express] POST /api/login 401 in 11ms :: {"message":"Invalid email or password"}

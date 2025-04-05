@@ -1,0 +1,122 @@
+
+> rest-express@1.0.0 dev
+Inicializando base de datos...
+Se encontraron 3 usuarios en la base de datos
+Se encontraron 6 rutas en la base de datos
+Se encontraron 4 vehículos en la base de datos
+Se encontraron 1 asignaciones en la base de datos
+Inicialización de la base de datos completada
+Base de datos inicializada correctamente
+11:43:15 PM [express] serving on port 5000
+Error: Connection terminated due to connection timeout
+    at /home/runner/workspace/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PGStore._asyncQuery (/home/runner/workspace/node_modules/connect-pg-simple/index.js:322:21)
+Error: Connection terminated due to connection timeout
+    at /home/runner/workspace/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PGStore._asyncQuery (/home/runner/workspace/node_modules/connect-pg-simple/index.js:322:21)
+11:43:31 PM [express] GET /api/user 304 in 91ms :: {"id":1,"username":"admin","email":"admin@transitp…
+11:43:32 PM [express] GET /api/users 304 in 120ms :: [{"id":1,"username":"admin","email":"admin@trans…
+11:43:32 PM [express] GET /api/routes 200 in 125ms :: [{"id":6,"name":"assssssssss","status":"active"…
+11:43:32 PM [express] GET /api/stats 304 in 211ms :: {"activeRoutesCount":6,"activeVehiclesCount":3,"…
+Error in createRoute: error: column "coordinates" of relation "routes" does not exist
+    at /home/runner/workspace/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async <anonymous> (/home/runner/workspace/node_modules/src/node-postgres/session.ts:104:19)
+    at async DatabaseStorage.createRoute (/home/runner/workspace/server/storage.ts:521:24)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:141:21) {
+  length: 130,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '86',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1066',
+  routine: 'checkInsertTargets'
+}
+11:44:54 PM [express] POST /api/routes 500 in 586ms :: {"message":"Failed to create route"}
+Error in createRoute: error: column "coordinates" of relation "routes" does not exist
+    at /home/runner/workspace/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async <anonymous> (/home/runner/workspace/node_modules/src/node-postgres/session.ts:104:19)
+    at async DatabaseStorage.createRoute (/home/runner/workspace/server/storage.ts:521:24)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:141:21) {
+  length: 130,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '86',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1066',
+  routine: 'checkInsertTargets'
+}
+11:45:00 PM [express] POST /api/routes 500 in 312ms :: {"message":"Failed to create route"}
+Error in createRoute: error: column "coordinates" of relation "routes" does not exist
+    at /home/runner/workspace/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async <anonymous> (/home/runner/workspace/node_modules/src/node-postgres/session.ts:104:19)
+    at async DatabaseStorage.createRoute (/home/runner/workspace/server/storage.ts:521:24)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:141:21) {
+  length: 130,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '86',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1066',
+  routine: 'checkInsertTargets'
+}
+11:45:02 PM [express] POST /api/routes 500 in 313ms :: {"message":"Failed to create route"}
+Error in createRoute: error: column "coordinates" of relation "routes" does not exist
+    at /home/runner/workspace/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async <anonymous> (/home/runner/workspace/node_modules/src/node-postgres/session.ts:104:19)
+    at async DatabaseStorage.createRoute (/home/runner/workspace/server/storage.ts:521:24)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:141:21) {
+  length: 130,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '86',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1066',
+  routine: 'checkInsertTargets'
+}
+11:45:27 PM [express] POST /api/routes 500 in 479ms :: {"message":"Failed to create route"}
