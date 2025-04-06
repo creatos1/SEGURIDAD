@@ -234,7 +234,7 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
                       key={vehicle.id} 
                       value={vehicle.id.toString()}
                     >
-                      Unidad #{vehicle.id} - Cap: {vehicle.capacity}
+                      {vehicle.vehicleNumber} - {vehicle.vehicleType} - Cap: {vehicle.capacity}
                     </SelectItem>
                   ))
                 )}
