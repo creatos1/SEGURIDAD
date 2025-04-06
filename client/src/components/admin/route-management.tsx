@@ -5,6 +5,7 @@ import { Card } from '../ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import RouteCreator from './route-creator';
 import { useApi } from '@/hooks/use-api';
+import { useToast } from '@/hooks/use-toast';
 import type { Route } from '@shared/schema';
 
 export default function RouteManagement() {
@@ -13,6 +14,7 @@ export default function RouteManagement() {
   const [selectedVehicles, setSelectedVehicles] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const { get, post, put, del } = useApi();
+  const { toast } = useToast();
   const [routes, setRoutes] = useState([]);
 
   useEffect(() => {
