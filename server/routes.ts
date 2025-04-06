@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { UserRole, insertVehicleSchema, insertRouteSchema, insertRouteStopSchema, insertAssignmentSchema, insertDriverRatingSchema, insertLocationUpdateSchema } from "@shared/schema";
 import { setupAuth, checkRole } from "./auth";
-import { setupWebSocketServer } from "./websocket";
+// Removed: import { setupWebSocketServer } from "./websocket";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -13,8 +13,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server
   const httpServer = createServer(app);
 
-  // Setup WebSocket for real-time updates
-  setupWebSocketServer(httpServer);
+  // Removed WebSocket server setup
 
   // API routes
   // Vehicles
@@ -476,6 +475,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(usersWithoutPasswords);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.post('/api/drivers', async (req, res) => {
+    try {
+      const driver = await storage.createDriver(req.body);
+      res.json({ success: true, data: driver });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
     }
   });
 
