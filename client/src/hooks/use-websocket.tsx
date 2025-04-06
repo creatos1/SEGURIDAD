@@ -56,7 +56,7 @@ export function useWebSocket() {
     socket.onclose = (event) => {
       setIsConnected(false);
       console.log("WebSocket disconnected", event.code, event.reason);
-      
+
       // Only attempt to reconnect if the connection wasn't closed intentionally
       if (event.code !== 1000) {
         console.log("Attempting to reconnect...");
@@ -82,7 +82,11 @@ export function useWebSocket() {
       }
     };
 
-    socketRef.current = socket;
+      socketRef.current = socket;
+    } catch (error) {
+      console.error("Failed to establish WebSocket connection:", error);
+      setTimeout(connect, 3000);
+    }
   }, [user]);
 
   // Subscribe to a channel
