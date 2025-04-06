@@ -56,14 +56,19 @@ export default function DriverManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const payload = {
+        ...formData,
+        role: 'DRIVER'
+      };
+      
       if (editingDriver) {
-        await put(`/api/users/${editingDriver.id}`, formData);
+        await put(`/api/users/${editingDriver.id}`, payload);
         toast({
           title: "Conductor actualizado",
           description: "Los datos se actualizaron correctamente"
         });
       } else {
-        await post('/api/users', formData);
+        await post('/api/users', payload);
         toast({
           title: "Conductor creado",
           description: "El nuevo conductor se agregó correctamente"
@@ -71,7 +76,7 @@ export default function DriverManagement() {
       }
       setIsModalOpen(false);
       setEditingDriver(null);
-      loadDrivers();
+      await loadDrivers();
     } catch (error) {
       toast({
         title: "Error",

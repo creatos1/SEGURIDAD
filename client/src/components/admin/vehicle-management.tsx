@@ -64,7 +64,7 @@ export default function VehicleManagement() {
       }
       setIsModalOpen(false);
       setEditingVehicle(null);
-      loadVehicles();
+      await loadVehicles();
     } catch (error) {
       toast({
         title: "Error",

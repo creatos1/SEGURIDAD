@@ -40,15 +40,31 @@ export default function RouteManagement() {
   };
 
   const handleSave = async (routeData) => {
-    const payload = { ...routeData, vehicles: selectedVehicles };
-    if (editingRoute) {
-      await put(`/api/routes/${editingRoute.id}`, payload);
-    } else {
-      await post('/api/routes', payload);
+    try {
+      const payload = { ...routeData, vehicles: selectedVehicles };
+      if (editingRoute) {
+        await put(`/api/routes/${editingRoute.id}`, payload);
+        toast({
+          title: "Ruta actualizada",
+          description: "La ruta se actualizó correctamente"
+        });
+      } else {
+        await post('/api/routes', payload);
+        toast({
+          title: "Ruta creada",
+          description: "La ruta se creó correctamente"
+        });
+      }
+      setIsCreateModalOpen(false);
+      setEditingRoute(null);
+      await loadRoutes();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Error en la operación",
+        variant: "destructive"
+      });
     }
-    setIsCreateModalOpen(false);
-    setEditingRoute(null);
-    loadRoutes();
   };
 
   const [routeToDelete, setRouteToDelete] = useState<number | null>(null);
