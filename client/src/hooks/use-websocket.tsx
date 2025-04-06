@@ -23,7 +23,9 @@ export function useWebSocket() {
     try {
       // Create WebSocket connection
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const wsUrl = `${protocol}//${window.location.host}/ws`;
+      const host = window.location.host;
+      const wsUrl = `${protocol}//${host}/ws`;
+      console.log('Connecting to WebSocket:', wsUrl);
       const socket = new WebSocket(wsUrl);
 
       socket.addEventListener('error', (error) => {
@@ -76,10 +78,14 @@ export function useWebSocket() {
 
       socket.onmessage = (event) => {
         try {
-          const data = JSON.parse(event.data);
-          setLastMessage(data);
+          if (typeof event.data === 'string') {
+            const data = JSON.parse(event.data);
+            setLastMessage(data);
+          } else {
+            console.warn("Received non-string message:", event.data);
+          }
         } catch (error) {
-          console.error("Error parsing WebSocket message:", error);
+          console.error("Error parsing WebSocket message:", error, "Raw data:", event.data);
         }
       };
 

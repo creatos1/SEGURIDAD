@@ -13,7 +13,8 @@ export function setupWebSocketServer(server: Server) {
   const wss = new WebSocketServer({ 
     server, 
     path: '/ws',
-    perMessageDeflate: false
+    perMessageDeflate: false,
+    clientTracking: true
   });
   const clients: Map<WebSocket, Client> = new Map();
 
