@@ -36,15 +36,17 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
   const [isDrawing, setIsDrawing] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState('');
 
-  const { data: vehicles = [] } = useQuery({
-    queryKey: ['vehicles'],
-    queryFn: async () => {
-      const res = await apiRequest('GET', '/api/vehicles');
-      const data = await res.json();
-      return data.filter(vehicle => vehicle.status === 'active');
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutos
-  });
+  const { get } = useApi();
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+
+  const loadVehicles = async () => {
+    const data = await get<Vehicle[]>('/api/vehicles');
+    if (data) setVehicles(data);
+  };
+
+  useEffect(() => {
+    loadVehicles();
+  }, []);
 
   useEffect(() => {
     if (onEdit?.vehicleId) {
