@@ -21,7 +21,8 @@ export function useApi() {
     });
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.statusText}`);
+      const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      throw new Error(errorData.message || `API Error: ${response.statusText}`);
     }
 
     return response.json();

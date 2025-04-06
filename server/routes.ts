@@ -475,12 +475,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/drivers', async (req, res) => {
+  app.post('/api/users', checkRole(UserRole.ADMIN), async (req, res) => {
     try {
-      const driver = await storage.createDriver(req.body);
-      res.json({ success: true, data: driver });
+      const userData = {
+        ...req.body,
+        role: UserRole.DRIVER
+      };
+      const driver = await storage.createUser(userData);
+      const { password, ...driverWithoutPassword } = driver;
+      res.json(driverWithoutPassword);
     } catch (error) {
-      res.status(400).json({ success: false, error: error.message });
+      res.status(400).json({ message: error instanceof Error ? error.message : "Error creating driver" });
     }
   });
 
