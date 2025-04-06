@@ -10,6 +10,7 @@ import { apiRequest } from '@/lib/api';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
