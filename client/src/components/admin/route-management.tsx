@@ -49,9 +49,38 @@ export default function RouteManagement() {
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this route?')) {
-      await del(`/api/routes/${id}`);
+    try {
+      if (window.confirm('¿Estás seguro de eliminar esta ruta?')) {
+        await del(`/api/routes/${id}`);
+        toast({
+          title: "Ruta eliminada",
+          description: "La ruta se eliminó correctamente"
+        });
+        loadRoutes();
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Error al eliminar la ruta",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleUpdate = async (id: number, data: any) => {
+    try {
+      await put(`/api/routes/${id}`, data);
+      toast({
+        title: "Ruta actualizada",
+        description: "La ruta se actualizó correctamente"
+      });
       loadRoutes();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Error al actualizar la ruta",
+        variant: "destructive"
+      });
     }
   };
 

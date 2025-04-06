@@ -1,149 +1,144 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Plus, Edit, Trash, Home } from 'lucide-react';
+import { Plus, Edit, Trash } from 'lucide-react';
 import { Card } from '../ui/card';
-import { useApi } from '@/hooks/use-api';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
-import type { Vehicle } from '@shared/schema';
-import { toast } from '@/components/ui/use-toast'; // Assuming a toast component exists
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { useApi } from '@/hooks/use-api';
+import { useToast } from '../ui/use-toast';
 
 export default function VehicleManagement() {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [vehicles, setVehicles] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
+  const [editingVehicle, setEditingVehicle] = useState(null);
   const [formData, setFormData] = useState({
-    vehicleNumber: '',
-    vehicleType: '',
     capacity: '',
     status: 'active'
   });
-
   const { get, post, put, del } = useApi();
+  const { toast } = useToast();
 
   useEffect(() => {
     loadVehicles();
   }, []);
 
   const loadVehicles = async () => {
-    const data = await get<Vehicle[]>('/api/vehicles');
-    if (data) setVehicles(data);
-  };
-
-  const handleEdit = (vehicle: Vehicle) => {
-    setEditingVehicle(vehicle);
-    setFormData({
-      vehicleNumber: vehicle.vehicleNumber,
-      vehicleType: vehicle.vehicleType,
-      capacity: vehicle.capacity.toString(),
-      status: vehicle.status
-    });
-    setIsModalOpen(true);
+    try {
+      const data = await get('/api/vehicles');
+      setVehicles(data);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Error al cargar vehículos",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validaciones
-    if (!formData.vehicleNumber || !formData.vehicleType || !formData.capacity) {
-      toast({
-        title: "Error",
-        description: "Todos los campos son requeridos",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const payload = {
-      vehicleNumber: formData.vehicleNumber,
-      vehicleType: formData.vehicleType,
-      capacity: parseInt(formData.capacity),
-      status: formData.status
-    };
-
     try {
+      const payload = {
+        ...formData,
+        capacity: parseInt(formData.capacity)
+      };
+
       if (editingVehicle) {
         await put(`/api/vehicles/${editingVehicle.id}`, payload);
         toast({
-          title: "Éxito",
-          description: "Vehículo actualizado correctamente"
+          title: "Vehículo actualizado",
+          description: "Los datos se actualizaron correctamente"
         });
       } else {
         await post('/api/vehicles', payload);
         toast({
-          title: "Éxito",
-          description: "Vehículo creado correctamente"
+          title: "Vehículo creado",
+          description: "El nuevo vehículo se agregó correctamente"
         });
       }
-
       setIsModalOpen(false);
       setEditingVehicle(null);
       loadVehicles();
-    } catch (error: any) {
-      if (error.response?.status === 400) {
-        toast({
-          title: "Error",
-          description: "El número de vehículo ya existe",
-          variant: "destructive"
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: "Hubo un error al procesar la operación",
-          variant: "destructive"
-        });
-      }
-      console.error('Error:', error);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Error al procesar la operación",
+        variant: "destructive"
+      });
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this vehicle?')) {
-      await del(`/api/vehicles/${id}`);
-      loadVehicles();
+    try {
+      if (window.confirm('¿Estás seguro de eliminar este vehículo?')) {
+        await del(`/api/vehicles/${id}`);
+        toast({
+          title: "Vehículo eliminado",
+          description: "El vehículo se eliminó correctamente"
+        });
+        loadVehicles();
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Error al eliminar el vehículo",
+        variant: "destructive"
+      });
     }
   };
 
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Vehicle Management</h1>
-        <div className="flex gap-2">
-          <Button onClick={() => window.location.href = '/'}>
-            <Home className="h-4 w-4 mr-2" />
-            Home
-          </Button>
-          <Button onClick={() => {
-            setFormData({
-              vehicleNumber: '',
-              vehicleType: '',
-              capacity: '',
-              status: 'active'
-            });
-            setIsModalOpen(true);
-          }}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Vehicle
-          </Button>
-        </div>
+        <h1 className="text-2xl font-bold">Gestión de Vehículos</h1>
+        <Button onClick={() => {
+          setEditingVehicle(null);
+          setFormData({
+            capacity: '',
+            status: 'active'
+          });
+          setIsModalOpen(true);
+        }}>
+          <Plus className="w-4 h-4 mr-2" />
+          Agregar Vehículo
+        </Button>
       </div>
 
       <div className="grid gap-4">
-        {vehicles.map((vehicle) => (
+        {vehicles.map((vehicle: any) => (
           <Card key={vehicle.id} className="p-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-semibold">{vehicle.vehicleNumber}</h3>
-                <p className="text-sm text-gray-500">
-                  {vehicle.vehicleType} - Capacity: {vehicle.capacity} - Status: {vehicle.status}
-                </p>
+                <h3 className="font-semibold">Vehículo #{vehicle.id}</h3>
+                <p className="text-sm text-gray-500">Capacidad: {vehicle.capacity}</p>
+                <p className="text-sm text-gray-500">Estado: {vehicle.status}</p>
               </div>
               <div className="flex gap-2">
-                <Button variant="ghost" size="icon" onClick={() => handleEdit(vehicle)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setEditingVehicle(vehicle);
+                    setFormData({
+                      capacity: vehicle.capacity.toString(),
+                      status: vehicle.status
+                    });
+                    setIsModalOpen(true);
+                  }}
+                >
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => handleDelete(vehicle.id)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleDelete(vehicle.id)}
+                >
                   <Trash className="h-4 w-4" />
                 </Button>
               </div>
@@ -155,48 +150,23 @@ export default function VehicleManagement() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editingVehicle ? 'Edit Vehicle' : 'Add New Vehicle'}</DialogTitle>
+            <DialogTitle>
+              {editingVehicle ? 'Editar Vehículo' : 'Agregar Vehículo'}
+            </DialogTitle>
+            <DialogDescription>
+              Complete los datos del vehículo
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Input
-                placeholder="Vehicle Number"
-                value={formData.vehicleNumber}
-                onChange={(e) => setFormData({...formData, vehicleNumber: e.target.value})}
-              />
-            </div>
-            <div>
-              <Input
-                placeholder="Vehicle Type"
-                value={formData.vehicleType}
-                onChange={(e) => setFormData({...formData, vehicleType: e.target.value})}
-              />
-            </div>
-            <div>
-              <Input
-                type="number"
-                placeholder="Capacity"
-                value={formData.capacity}
-                onChange={(e) => setFormData({...formData, capacity: e.target.value})}
-              />
-            </div>
-            <div>
-              <Select
-                value={formData.status}
-                onValueChange={(value) => setFormData({...formData, status: value})}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Input
+              type="number"
+              placeholder="Capacidad"
+              value={formData.capacity}
+              onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
+              required
+            />
             <Button type="submit" className="w-full">
-              {editingVehicle ? 'Update Vehicle' : 'Add Vehicle'}
+              {editingVehicle ? 'Actualizar' : 'Crear'}
             </Button>
           </form>
         </DialogContent>

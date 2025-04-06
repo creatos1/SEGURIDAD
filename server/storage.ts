@@ -435,8 +435,8 @@ export class DatabaseStorage implements IStorage {
 
   async deleteRoute(id: number): Promise<boolean> {
     try {
-      const result = await db.delete(routes).where(eq(routes.id, id));
-      return result.length > 0;
+      await db.delete(routes).where(eq(routes.id, id));
+      return true;
     } catch (error) {
       console.error('Error in deleteRoute:', error);
       return false;
