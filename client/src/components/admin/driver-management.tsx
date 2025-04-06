@@ -32,9 +32,19 @@ export default function DriverManagement() {
 
   const loadDrivers = async () => {
     try {
-      const data = await get('/api/users?role=DRIVER');
-      setDrivers(data);
+      const data = await get('/api/users', { role: 'DRIVER' });
+      if (Array.isArray(data)) {
+        setDrivers(data);
+      } else {
+        console.error('Unexpected response format:', data);
+        toast({
+          title: "Error",
+          description: "Error en el formato de datos de conductores",
+          variant: "destructive"
+        });
+      }
     } catch (error) {
+      console.error('Error loading drivers:', error);
       toast({
         title: "Error",
         description: "Error al cargar conductores",
