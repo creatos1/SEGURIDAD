@@ -18,6 +18,8 @@ export default function VehicleManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(null);
   const [formData, setFormData] = useState({
+    vehicleNumber: '',
+    vehicleType: '',
     capacity: '',
     status: 'active'
   });
@@ -46,25 +48,40 @@ export default function VehicleManagement() {
     try {
       const payload = {
         ...formData,
-        capacity: parseInt(formData.capacity)
+        capacity: parseInt(formData.capacity),
+        vehicleNumber: formData.vehicleNumber || `Unidad #${Date.now()}`,
+        vehicleType: formData.vehicleType || 'Standard'
       };
 
       if (editingVehicle) {
-        await put(`/api/vehicles/${editingVehicle.id}`, payload);
-        toast({
-          title: "Vehículo actualizado",
-          description: "Los datos se actualizaron correctamente"
-        });
+        const response = await put(`/api/vehicles/${editingVehicle.id}`, payload);
+        if (response.ok) {
+          toast({
+            title: "Vehículo actualizado",
+            description: "Los datos se actualizaron correctamente"
+          });
+          setIsModalOpen(false);
+          setEditingVehicle(null);
+          await loadVehicles();
+        } else {
+          const error = await response.json();
+          throw new Error(error.message || 'Error al actualizar el vehículo');
+        }
       } else {
-        await post('/api/vehicles', payload);
-        toast({
-          title: "Vehículo creado",
-          description: "El nuevo vehículo se agregó correctamente"
-        });
+        const response = await post('/api/vehicles', payload);
+        if (response.ok) {
+          toast({
+            title: "Vehículo creado",
+            description: "El nuevo vehículo se agregó correctamente"
+          });
+          setIsModalOpen(false);
+          setEditingVehicle(null);
+          await loadVehicles();
+        } else {
+          const error = await response.json();
+          throw new Error(error.message || 'Error al crear el vehículo');
+        }
       }
-      setIsModalOpen(false);
-      setEditingVehicle(null);
-      await loadVehicles();
     } catch (error) {
       toast({
         title: "Error",
@@ -77,12 +94,17 @@ export default function VehicleManagement() {
   const handleDelete = async (id: number) => {
     try {
       if (window.confirm('¿Estás seguro de eliminar este vehículo?')) {
-        await del(`/api/vehicles/${id}`);
-        toast({
-          title: "Vehículo eliminado",
-          description: "El vehículo se eliminó correctamente"
-        });
-        loadVehicles();
+        const response = await del(`/api/vehicles/${id}`);
+        if (response.ok) {
+          toast({
+            title: "Vehículo eliminado",
+            description: "El vehículo se eliminó correctamente"
+          });
+          await loadVehicles();
+        } else {
+          const error = await response.json();
+          throw new Error(error.message || 'Error al eliminar el vehículo');
+        }
       }
     } catch (error) {
       toast({
@@ -158,6 +180,20 @@ export default function VehicleManagement() {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              type="text"
+              placeholder="Número de Vehículo"
+              value={formData.vehicleNumber}
+              onChange={(e) => setFormData({ ...formData, vehicleNumber: e.target.value })}
+              required
+            />
+            <Input
+              type="text"
+              placeholder="Tipo de Vehículo"
+              value={formData.vehicleType}
+              onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })}
+              required
+            />
             <Input
               type="number"
               placeholder="Capacidad"
