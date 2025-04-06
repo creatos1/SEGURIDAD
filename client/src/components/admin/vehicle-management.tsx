@@ -57,27 +57,27 @@ export default function VehicleManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const payload = {
-        ...formData,
-        capacity: parseInt(formData.capacity),
-        vehicleNumber: formData.vehicleNumber || `Unidad #${Date.now()}`,
-        vehicleType: formData.vehicleType || 'Standard'
-      };
-
       if (editingVehicle) {
-        const response = await put(`/api/vehicles/${editingVehicle.id}`, payload);
-        if (response.ok) {
-          toast({
-            title: "Vehículo actualizado",
-            description: "Los datos se actualizaron correctamente"
-          });
-          setIsModalOpen(false);
-          setEditingVehicle(null);
-          await loadVehicles();
-        } else {
+        const response = await put(`/api/vehicles/${editingVehicle.id}`, {
+          vehicleNumber: formData.vehicleNumber,
+          vehicleType: formData.vehicleType,
+          capacity: parseInt(formData.capacity),
+          status: formData.status
+        });
+        
+        if (!response.ok) {
           const error = await response.json();
           throw new Error(error.message || 'Error al actualizar el vehículo');
         }
+
+        toast({
+          title: "Vehículo actualizado",
+          description: "Los datos se actualizaron correctamente"
+        });
+        
+        setIsModalOpen(false);
+        setEditingVehicle(null);
+        await loadVehicles();
       } else {
         const response = await post('/api/vehicles', payload);
         if (response.ok) {
