@@ -1,0 +1,88 @@
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket disconnected 1006 
+Attempting to reconnect in 1s...
+Connecting to WebSocket: wss://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/ws
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket disconnected 1006 
+Attempting to reconnect in 1s...
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket disconnected 1006 
+Attempting to reconnect in 1s...
+Connecting to WebSocket: wss://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/ws
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket disconnected 1006 
+Attempting to reconnect in 1s...
+Connecting to WebSocket: wss://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/ws
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket disconnected 1006 
+Attempting to reconnect in 1s...
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket disconnected 1006 
+Attempting to reconnect in 1s...
+Error: 
+SyntaxError {}
+
+Connecting to WebSocket: wss://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/ws
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket disconnected 1006 
+Attempting to reconnect in 1s...
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket disconnected 1006 
+Attempting to reconnect in 1s...
+Connecting to WebSocket: wss://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/ws
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket disconnected 1006 
+Attempting to reconnect in 1s...
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket error: 
+Event {isTrusted: true}
+
+WebSocket disconnected 1006 
+Attempting to reconnect in 1s...
