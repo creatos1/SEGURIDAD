@@ -195,6 +195,9 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
       <DialogContent className="sm:max-w-[800px]">
         <DialogHeader>
           <DialogTitle>{onEdit ? 'Editar Ruta' : 'Crear Nueva Ruta'}</DialogTitle>
+          <DialogDescription>
+            {onEdit ? 'Modifique los detalles de la ruta existente' : 'Ingrese los detalles para crear una nueva ruta'}
+          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <Input
