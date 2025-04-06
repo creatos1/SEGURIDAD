@@ -26,7 +26,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/vehicles/active", async (req, res) => {
     try {
       const vehicles = await storage.getActiveVehicles();
-      res.json(vehicles);
+      // Agregar campos faltantes a cada vehículo
+      const enhancedVehicles = vehicles.map(vehicle => ({
+        ...vehicle,
+        vehicleNumber: `Unidad #${vehicle.id}`,
+        vehicleType: "Bus Estándar",
+      }));
+      res.json(enhancedVehicles);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch active vehicles" });
     }
