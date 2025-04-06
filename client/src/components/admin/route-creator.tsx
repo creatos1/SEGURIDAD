@@ -233,14 +233,8 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
                     <SelectItem 
                       key={vehicle.id} 
                       value={vehicle.id.toString()}
-                      className="py-2"
                     >
-                      <div>
-                        <div className="font-medium">{vehicle.vehicleNumber}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {vehicle.vehicleType} - Capacidad: {vehicle.capacity}
-                        </div>
-                      </div>
+                      Unidad #{vehicle.id} - Cap: {vehicle.capacity}
                     </SelectItem>
                   ))
                 )}
