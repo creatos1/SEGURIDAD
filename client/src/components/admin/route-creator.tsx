@@ -155,9 +155,10 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
         startLocation,
         endLocation,
         frequency: parseInt(frequency),
-        waypoints: coordinates.map(coord => `${coord[0]},${coord[1]}`),
+        waypoints: JSON.stringify(coordinates.map(coord => `${coord[0]},${coord[1]}`)),
         status: 'active',
-        vehicleId: selectedVehicle ? parseInt(selectedVehicle) : undefined
+        vehicleId: selectedVehicle ? parseInt(selectedVehicle) : undefined,
+        createdBy: 4  // Using admin ID temporarily
       };
 
       if (onEdit) {
