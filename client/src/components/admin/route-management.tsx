@@ -53,12 +53,15 @@ export default function RouteManagement() {
   const handleDelete = async (id: number) => {
     try {
       if (window.confirm('¿Estás seguro de eliminar esta ruta?')) {
-        await del(`/api/routes/${id}`);
-        toast({
-          title: "Ruta eliminada",
-          description: "La ruta se eliminó correctamente"
-        });
-        loadRoutes();
+        const response = await del(`/api/routes/${id}`);
+        if (response.ok) {
+          toast({
+            title: "Ruta eliminada",
+            description: "La ruta se eliminó correctamente"
+          });
+          // Actualizar la lista de rutas filtrando la eliminada
+          setRoutes(routes.filter(route => route.id !== id));
+        }
       }
     } catch (error) {
       toast({
