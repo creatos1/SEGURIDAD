@@ -37,11 +37,11 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
   const [selectedVehicle, setSelectedVehicle] = useState('');
 
   const { data: vehicles = [] } = useQuery({
-    queryKey: ['vehicles', 'active'],
+    queryKey: ['vehicles'],
     queryFn: async () => {
-      const res = await apiRequest('GET', '/api/vehicles/active');
+      const res = await apiRequest('GET', '/api/vehicles');
       const data = await res.json();
-      return data;
+      return data.filter(vehicle => vehicle.status === 'active');
     },
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
@@ -234,7 +234,7 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
                       key={vehicle.id} 
                       value={vehicle.id.toString()}
                     >
-                      {vehicle.vehicleNumber} - {vehicle.vehicleType} - Cap: {vehicle.capacity}
+                      {vehicle.vehicleNumber} - Capacidad: {vehicle.capacity} - Estado: {vehicle.status}
                     </SelectItem>
                   ))
                 )}
