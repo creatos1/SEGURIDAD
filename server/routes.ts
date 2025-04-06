@@ -3,7 +3,6 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { UserRole, insertVehicleSchema, insertRouteSchema, insertRouteStopSchema, insertAssignmentSchema, insertDriverRatingSchema, insertLocationUpdateSchema } from "@shared/schema";
 import { setupAuth, checkRole } from "./auth";
-// Removed: import { setupWebSocketServer } from "./websocket";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
