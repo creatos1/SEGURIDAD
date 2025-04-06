@@ -209,18 +209,30 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
           />
-          <Select value={selectedVehicle} onValueChange={setSelectedVehicle}>
-            <SelectTrigger>
-              <SelectValue placeholder="Seleccionar Vehículo" />
-            </SelectTrigger>
-            <SelectContent>
+          <div className="border rounded-md">
+            <div className="p-2 border-b bg-background">
+              <p className="text-sm font-medium">Seleccionar Vehículo</p>
+            </div>
+            <div className="max-h-[200px] overflow-y-auto p-1">
               {vehicles.map((vehicle) => (
-                <SelectItem key={vehicle.id} value={vehicle.id.toString()}>
-                  Unidad #{vehicle.vehicleNumber} - {vehicle.vehicleType}
-                </SelectItem>
+                <div
+                  key={vehicle.id}
+                  className={`p-2 rounded-md cursor-pointer hover:bg-accent mb-1 ${
+                    selectedVehicle === vehicle.id.toString() ? 'bg-accent' : ''
+                  }`}
+                  onClick={() => setSelectedVehicle(vehicle.id.toString())}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">Unidad #{vehicle.vehicleNumber}</p>
+                      <p className="text-sm text-muted-foreground">{vehicle.vehicleType}</p>
+                    </div>
+                    <p className="text-sm">Capacidad: {vehicle.capacity}</p>
+                  </div>
+                </div>
               ))}
-            </SelectContent>
-          </Select>
+            </div>
+          </div>
           <div className="h-[400px] rounded-md border">
             <LeafletMap
               center={[25.761681, -80.191788]}
