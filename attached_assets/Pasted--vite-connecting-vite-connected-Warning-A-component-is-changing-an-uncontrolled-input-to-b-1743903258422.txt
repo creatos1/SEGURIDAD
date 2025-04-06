@@ -1,0 +1,37 @@
+[vite] connecting...
+[vite] connected.
+Warning: A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://reactjs.org/link/controlled-components
+    at input
+    at _c (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/src/components/ui/input.tsx:20:11)
+    at form
+    at div
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:202:13
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:231:7
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:124:11
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:105:11
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:202:13
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:430:5
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:1295:13
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:1218:58
+    at Presence (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:651:11)
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:1209:64
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:124:11
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:105:11
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:202:13
+    at https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:633:22
+    at Presence (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:651:11)
+    at Provider (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-JJS7DLG7.js?v=1045c883:38:15)
+    at DialogPortal (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:1172:11)
+    at _c3 (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/src/components/ui/dialog.tsx:51:12)
+    at Provider (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-JJS7DLG7.js?v=1045c883:38:15)
+    at Dialog (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1045c883:1113:5)
+    at div
+    at VehicleManagement (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/src/components/admin/vehicle-management.tsx:34:35)
+    at main
+    at div
+    at DashboardPage (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/src/pages/dashboard-page.tsx:32:35)
+    at Route (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1045c883:323:16)
+    at ProtectedRoute (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/src/lib/protected-route.tsx:22:3)
+    at Switch (https://16859bda-d6ba-48bd-a80b-4b45b63fe843-00-2n3ktnzb6cl23.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1045c883:379:17)
+    at Router
+    at TourProvider…
