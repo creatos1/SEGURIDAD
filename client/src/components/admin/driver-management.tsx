@@ -65,14 +65,16 @@ export default function DriverManagement() {
 
       if (editingDriver) {
         // Update existing driver
-        await put(`/api/users/${editingDriver.id}`, payload);
+        const response = await put(`/api/users/${editingDriver.id}`, payload);
+        await throwIfResNotOk(response);
         toast({
           title: "Conductor actualizado",
           description: "Los datos del conductor se actualizaron correctamente"
         });
       } else {
         // Create new driver
-        await post('/api/users', payload);
+        const response = await post('/api/users', payload);
+        await throwIfResNotOk(response);
         toast({
           title: "Conductor creado",
           description: "El nuevo conductor se agregó correctamente"
@@ -92,7 +94,7 @@ export default function DriverManagement() {
       console.error('Error:', error);
       toast({
         title: "Error",
-        description: "Hubo un error al procesar la operación",
+        description: error instanceof Error ? error.message : "Hubo un error al procesar la operación",
         variant: "destructive"
       });
     } finally {
@@ -167,7 +169,10 @@ export default function DriverManagement() {
       </div>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
+        <DialogContent aria-describedby="driver-form-description">
+          <div id="driver-form-description" className="sr-only">
+            Formulario para agregar o editar un conductor
+          </div>
           <DialogHeader>
             <DialogTitle>{editingDriver ? 'Edit Driver' : 'Add New Driver'}</DialogTitle>
             <DialogDescription>

@@ -1,14 +1,18 @@
 
-export const API_BASE_URL = 'http://0.0.0.0:5000/api';
+export const API_BASE_URL = '/api';
 
 export async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const contentType = res.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-      const error = await res.json();
-      throw new Error(error.message || `${res.status}: ${res.statusText}`);
-    } else {
-      const text = await res.text();
+    try {
+      if (contentType && contentType.includes("application/json")) {
+        const error = await res.json();
+        throw new Error(error.message || `${res.status}: ${res.statusText}`);
+      } else {
+        const text = await res.text();
+        throw new Error(`${res.status}: ${res.statusText}`);
+      }
+    } catch (e) {
       throw new Error(`${res.status}: ${res.statusText}`);
     }
   }
