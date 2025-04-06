@@ -38,8 +38,12 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
 
   const { data: vehicles = [] } = useQuery({
     queryKey: ['vehicles', 'active'],
-    queryFn: () => apiRequest('GET', '/api/vehicles/active').then(res => res.json()),
-    staleTime: 1000 * 60, // 1 minuto
+    queryFn: async () => {
+      const res = await apiRequest('GET', '/api/vehicles/active');
+      const data = await res.json();
+      return data;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutos
   });
 
   useEffect(() => {
@@ -215,18 +219,34 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
           />
-          <Select value={selectedVehicle} onValueChange={setSelectedVehicle}>
-            <SelectTrigger>
-              <SelectValue placeholder="Seleccionar vehículo" />
-            </SelectTrigger>
-            <SelectContent>
-              {vehicles.map((vehicle) => (
-                <SelectItem key={vehicle.id} value={vehicle.id.toString()}>
-                  {vehicle.vehicleNumber} - {vehicle.vehicleType} (Cap: {vehicle.capacity})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Vehículo</label>
+            <Select value={selectedVehicle} onValueChange={setSelectedVehicle}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccionar vehículo" />
+              </SelectTrigger>
+              <SelectContent>
+                {vehicles.length === 0 ? (
+                  <SelectItem value="" disabled>No hay vehículos disponibles</SelectItem>
+                ) : (
+                  vehicles.map((vehicle) => (
+                    <SelectItem 
+                      key={vehicle.id} 
+                      value={vehicle.id.toString()}
+                      className="py-2"
+                    >
+                      <div>
+                        <div className="font-medium">{vehicle.vehicleNumber}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {vehicle.vehicleType} - Capacidad: {vehicle.capacity}
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="h-[400px] rounded-md border">
             <LeafletMap
               center={[25.761681, -80.191788]}
