@@ -12,6 +12,7 @@ export function useWebSocket() {
   const [isConnected, setIsConnected] = useState(false);
   const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
   const subscriptionsRef = useRef<Set<string>>(new Set());
+  const [reconnectAttempts, setReconnectAttempts] = useState(0);
 
   const connect = useCallback(() => {
     // Close any existing connection
@@ -30,64 +31,64 @@ export function useWebSocket() {
         setTimeout(connect, 3000);
       });
 
-    // Set up event handlers
-    socket.onopen = () => {
-      setIsConnected(true);
-      console.log("WebSocket connected");
+      // Set up event handlers
+      socket.onopen = () => {
+        setIsConnected(true);
+        console.log("WebSocket connected");
+        setReconnectAttempts(0); // Reset reconnect attempts on successful connection
 
-      // If user is authenticated, send auth message
-      if (user) {
-        socket.send(JSON.stringify({
-          type: "auth",
-          userId: user.id,
-          role: user.role
-        }));
-      }
+        // If user is authenticated, send auth message
+        if (user) {
+          socket.send(JSON.stringify({
+            type: "auth",
+            userId: user.id,
+            role: user.role
+          }));
+        }
 
-      // Resubscribe to previous channels
-      subscriptionsRef.current.forEach(channel => {
-        socket.send(JSON.stringify({
-          type: "subscribe",
-          channel
-        }));
-      });
-    };
+        // Resubscribe to previous channels
+        subscriptionsRef.current.forEach(channel => {
+          socket.send(JSON.stringify({
+            type: "subscribe",
+            channel
+          }));
+        });
+      };
 
-    socket.onclose = (event) => {
-      setIsConnected(false);
-      console.log("WebSocket disconnected", event.code, event.reason);
+      socket.onclose = (event) => {
+        setIsConnected(false);
+        console.log("WebSocket disconnected", event.code, event.reason);
 
-      // Only attempt to reconnect if the connection wasn't closed intentionally
-      if (event.code !== 1000) {
-        console.log("Attempting to reconnect...");
-        setTimeout(connect, 3000);
-      }
-    };
+        // Only attempt to reconnect if the connection wasn't closed intentionally
+        if (event.code !== 1000) {
+          const reconnectDelay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
+          console.log(`Attempting to reconnect in ${reconnectDelay/1000}s...`);
+          setTimeout(connect, reconnectDelay);
+          setReconnectAttempts(prev => prev + 1);
+        }
+      };
 
-    socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      // Don't close the socket here - let the onclose handler deal with reconnection
-    };
+      socket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+        socket.close(); //Explicitly close the socket on error
+      };
 
-    socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
 
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        setLastMessage(data);
-      } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
-      }
-    };
+      socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          setLastMessage(data);
+        } catch (error) {
+          console.error("Error parsing WebSocket message:", error);
+        }
+      };
 
       socketRef.current = socket;
     } catch (error) {
       console.error("Failed to establish WebSocket connection:", error);
       setTimeout(connect, 3000);
     }
-  }, [user]);
+  }, [user, reconnectAttempts]);
 
   // Subscribe to a channel
   const subscribe = useCallback((channel: string) => {

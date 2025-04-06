@@ -45,8 +45,12 @@ export function setupWebSocketServer(server: Server) {
 
     // Handle messages
     ws.on('message', async (message) => {
+      let data;
       try {
-        const data = JSON.parse(message.toString());
+        data = JSON.parse(message.toString());
+        if (!data || typeof data !== 'object') {
+          throw new Error('Invalid message format');
+        }
         
         switch (data.type) {
           case 'subscribe':
