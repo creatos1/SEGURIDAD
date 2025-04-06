@@ -227,7 +227,7 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
               </SelectTrigger>
               <SelectContent>
                 {vehicles.length === 0 ? (
-                  <SelectItem value="" disabled>No hay vehículos disponibles</SelectItem>
+                  <SelectItem value="no-vehicles" disabled>No hay vehículos disponibles</SelectItem>
                 ) : (
                   vehicles.map((vehicle) => (
                     <SelectItem 
