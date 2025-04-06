@@ -66,7 +66,12 @@ export default function DriverManagement() {
       if (editingDriver) {
         // Update existing driver
         const response = await put(`/api/users/${editingDriver.id}`, payload);
-        await throwIfResNotOk(response);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'Error al actualizar conductor');
+        }
+        
         toast({
           title: "Conductor actualizado",
           description: "Los datos del conductor se actualizaron correctamente"
@@ -74,7 +79,12 @@ export default function DriverManagement() {
       } else {
         // Create new driver
         const response = await post('/api/users', payload);
-        await throwIfResNotOk(response);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'Error al crear conductor');
+        }
+        
         toast({
           title: "Conductor creado",
           description: "El nuevo conductor se agregó correctamente"
