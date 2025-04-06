@@ -9,10 +9,10 @@ export async function throwIfResNotOk(res: Response) {
         throw new Error(error.message || `${res.status}: ${res.statusText}`);
       } else {
         const text = await res.text();
-        throw new Error(`${res.status}: ${res.statusText} - ${text}`); //Added text for better debugging
+        throw new Error(`${res.status}: ${res.statusText} - ${text}`); 
       }
     } catch (e) {
-      throw new Error(`${res.status}: ${res.statusText} - Error parsing response`); //Added more informative error message
+      throw new Error(`${res.status}: ${res.statusText} - Error parsing response`); 
     }
   }
 }
@@ -21,7 +21,7 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
-): Promise<any> { //Changed return type to any to handle both JSON and error responses
+): Promise<any> { 
   const res = await fetch(url, {
     method,
     headers: {
@@ -42,8 +42,11 @@ export async function apiRequest(
       throw new Error('Invalid JSON response from server');
     }
   } catch (error) {
-    //This handles errors thrown by throwIfResNotOk or JSON.parse
     console.error("API Request Error:", error);
-    return {error: error.message}; //Return an object indicating an error occurred.
+    return {error: error.message}; 
   }
+}
+
+export async function post(url: string, data: unknown): Promise<any> {
+  return await apiRequest("POST", url, data);
 }
