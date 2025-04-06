@@ -13,8 +13,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server
   const httpServer = createServer(app);
 
-  // Removed WebSocket server setup
-
   // API routes
   // Vehicles
   app.get("/api/vehicles", async (req, res) => {

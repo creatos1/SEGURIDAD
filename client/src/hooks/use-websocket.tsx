@@ -7,12 +7,15 @@ type WebSocketMessage = {
 };
 
 export function useWebSocket() {
-  const { user } = useAuth();
-  const socketRef = useRef<WebSocket | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
-  const subscriptionsRef = useRef<Set<string>>(new Set());
-  const [reconnectAttempts, setReconnectAttempts] = useState(0);
+  // Temporarily disabled WebSocket functionality
+  return {
+    isConnected: false,
+    lastMessage: null,
+    subscribe: () => {},
+    unsubscribe: () => {},
+    sendMessage: () => {},
+    sendLocationUpdate: () => {}
+  };
 
   const connect = useCallback(() => {
     // Close any existing connection
