@@ -23,6 +23,17 @@ export default function VehicleManagement() {
     capacity: '',
     status: 'active'
   });
+
+  useEffect(() => {
+    if (editingVehicle) {
+      setFormData({
+        vehicleNumber: editingVehicle.vehicleNumber || '',
+        vehicleType: editingVehicle.vehicleType || '',
+        capacity: editingVehicle.capacity.toString(),
+        status: editingVehicle.status
+      });
+    }
+  }, [editingVehicle]);
   const { get, post, put, del } = useApi();
   const { toast } = useToast();
 
@@ -137,7 +148,8 @@ export default function VehicleManagement() {
           <Card key={vehicle.id} className="p-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-semibold">Vehículo #{vehicle.id}</h3>
+                <h3 className="font-semibold">{vehicle.vehicleNumber || `Vehículo #${vehicle.id}`}</h3>
+                <p className="text-sm text-gray-500">Tipo: {vehicle.vehicleType || 'Estándar'}</p>
                 <p className="text-sm text-gray-500">Capacidad: {vehicle.capacity}</p>
                 <p className="text-sm text-gray-500">Estado: {vehicle.status}</p>
               </div>
