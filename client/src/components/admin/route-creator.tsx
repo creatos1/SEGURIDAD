@@ -36,11 +36,17 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
   const [isDrawing, setIsDrawing] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState('');
 
-
   const { data: vehicles = [] } = useQuery({
-    queryKey: ['/api/vehicles/active'],
-    queryFn: () => apiRequest('GET', '/api/vehicles/active').then(res => res.json())
+    queryKey: ['vehicles', 'active'],
+    queryFn: () => apiRequest('GET', '/api/vehicles/active').then(res => res.json()),
+    staleTime: 1000 * 60, // 1 minuto
   });
+
+  useEffect(() => {
+    if (onEdit?.vehicleId) {
+      setSelectedVehicle(onEdit.vehicleId.toString());
+    }
+  }, [onEdit]);
 
   useEffect(() => {
     if (onEdit) {
@@ -144,7 +150,7 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
         frequency: parseInt(frequency),
         waypoints: coordinates.map(coord => `${coord[0]},${coord[1]}`),
         status: 'active',
-        vehicleId: parseInt(selectedVehicle)
+        vehicleId: selectedVehicle ? parseInt(selectedVehicle) : undefined
       };
 
       if (onEdit) {
@@ -209,30 +215,18 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
           />
-          <div className="border rounded-md">
-            <div className="p-2 border-b bg-background">
-              <p className="text-sm font-medium">Seleccionar Vehículo</p>
-            </div>
-            <div className="max-h-[200px] overflow-y-auto p-1">
+          <Select value={selectedVehicle} onValueChange={setSelectedVehicle}>
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccionar vehículo" />
+            </SelectTrigger>
+            <SelectContent>
               {vehicles.map((vehicle) => (
-                <div
-                  key={vehicle.id}
-                  className={`p-2 rounded-md cursor-pointer hover:bg-accent mb-1 ${
-                    selectedVehicle === vehicle.id.toString() ? 'bg-accent' : ''
-                  }`}
-                  onClick={() => setSelectedVehicle(vehicle.id.toString())}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Unidad #{vehicle.vehicleNumber}</p>
-                      <p className="text-sm text-muted-foreground">{vehicle.vehicleType}</p>
-                    </div>
-                    <p className="text-sm">Capacidad: {vehicle.capacity}</p>
-                  </div>
-                </div>
+                <SelectItem key={vehicle.id} value={vehicle.id.toString()}>
+                  {vehicle.vehicleNumber} - {vehicle.vehicleType} (Cap: {vehicle.capacity})
+                </SelectItem>
               ))}
-            </div>
-          </div>
+            </SelectContent>
+          </Select>
           <div className="h-[400px] rounded-md border">
             <LeafletMap
               center={[25.761681, -80.191788]}
