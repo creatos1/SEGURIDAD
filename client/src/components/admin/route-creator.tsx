@@ -172,8 +172,13 @@ export default function RouteCreator({ onEdit, onEditComplete }: RouteCreatorPro
         await createMutation.mutate(data);
         toast({
           title: "Ruta creada",
-          description: "La nueva ruta se agregó correctamente"
+          description: "La nueva ruta se agregó correctamente",
+          variant: "success"
         });
+        // Reset form and close dialog
+        resetForm();
+        // Force a page reload to refresh the data
+        window.location.reload();
       }
     } catch (error) {
       toast({
