@@ -159,3 +159,11 @@ export type InsertDriverRating = z.infer<typeof insertDriverRatingSchema>;
 
 export type LocationUpdate = typeof locationUpdates.$inferSelect;
 export type InsertLocationUpdate = z.infer<typeof insertLocationUpdateSchema>;
+
+export interface Vehicle {
+  id: number;
+  vehicleNumber: string;
+  vehicleType: string;
+  capacity: number;
+  status: string;
+}

@@ -343,7 +343,7 @@ export class DatabaseStorage implements IStorage {
 
   async getActiveVehicles(): Promise<Vehicle[]> {
     try {
-      const result = await db.select().from(vehicles).where(eq(vehicles.status, 'active'));
+      const result = await db.select({id: vehicles.id, vehicle_number: vehicles.vehicleNumber, vehicle_type: vehicles.vehicleType, capacity: vehicles.capacity, status: vehicles.status}).from(vehicles).where(eq(vehicles.status, 'active'));
       return result.map(row => this.mapRowToVehicle(row));
     } catch (error) {
       console.error('Error in getActiveVehicles:', error);
