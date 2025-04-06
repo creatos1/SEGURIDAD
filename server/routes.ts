@@ -40,11 +40,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const vehicle = await storage.getVehicle(id);
-      
+
       if (!vehicle) {
         return res.status(404).json({ message: "Vehicle not found" });
       }
-      
+
       res.json(vehicle);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch vehicle" });
@@ -69,11 +69,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const vehicleData = insertVehicleSchema.partial().parse(req.body);
       const vehicle = await storage.updateVehicle(id, vehicleData);
-      
+
       if (!vehicle) {
         return res.status(404).json({ message: "Vehicle not found" });
       }
-      
+
       res.json(vehicle);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -87,11 +87,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const success = await storage.deleteVehicle(id);
-      
+
       if (!success) {
         return res.status(404).json({ message: "Vehicle not found" });
       }
-      
+
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete vehicle" });
@@ -121,11 +121,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const route = await storage.getRoute(id);
-      
+
       if (!route) {
         return res.status(404).json({ message: "Route not found" });
       }
-      
+
       res.json(route);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch route" });
@@ -153,11 +153,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const routeData = insertRouteSchema.partial().parse(req.body);
       const route = await storage.updateRoute(id, routeData);
-      
+
       if (!route) {
         return res.status(404).json({ message: "Route not found" });
       }
-      
+
       res.json(route);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -171,11 +171,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const success = await storage.deleteRoute(id);
-      
+
       if (!success) {
         return res.status(404).json({ message: "Route not found" });
       }
-      
+
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete route" });
@@ -215,11 +215,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const stopData = insertRouteStopSchema.partial().parse(req.body);
       const stop = await storage.updateRouteStop(id, stopData);
-      
+
       if (!stop) {
         return res.status(404).json({ message: "Route stop not found" });
       }
-      
+
       res.json(stop);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -233,11 +233,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const success = await storage.deleteRouteStop(id);
-      
+
       if (!success) {
         return res.status(404).json({ message: "Route stop not found" });
       }
-      
+
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete route stop" });
@@ -250,9 +250,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const driverId = req.query.driverId ? parseInt(req.query.driverId as string) : undefined;
       const vehicleId = req.query.vehicleId ? parseInt(req.query.vehicleId as string) : undefined;
       const routeId = req.query.routeId ? parseInt(req.query.routeId as string) : undefined;
-      
+
       let assignments = [];
-      
+
       if (driverId) {
         assignments = await storage.getAssignmentsByDriverId(driverId);
       } else if (vehicleId) {
@@ -269,7 +269,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           assignments = await storage.getActiveAssignments();
         }
       }
-      
+
       res.json(assignments);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch assignments" });
@@ -293,19 +293,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const assignmentData = insertAssignmentSchema.partial().parse(req.body);
-      
+
       // Check if user is authorized to update this assignment
       const assignment = await storage.getAssignment(id);
       if (!assignment) {
         return res.status(404).json({ message: "Assignment not found" });
       }
-      
+
       // Only admin or the assigned driver can update assignment
       if (req.user.role !== UserRole.ADMIN && 
           !(req.user.role === UserRole.DRIVER && assignment.driverId === req.user.id)) {
         return res.status(403).json({ message: "Unauthorized to update this assignment" });
       }
-      
+
       const updatedAssignment = await storage.updateAssignment(id, assignmentData);
       res.json(updatedAssignment);
     } catch (error) {
@@ -320,11 +320,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const success = await storage.deleteAssignment(id);
-      
+
       if (!success) {
         return res.status(404).json({ message: "Assignment not found" });
       }
-      
+
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete assignment" });
@@ -335,9 +335,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/driver-ratings", async (req, res) => {
     try {
       const driverId = req.query.driverId ? parseInt(req.query.driverId as string) : undefined;
-      
+
       let ratings = [];
-      
+
       if (driverId) {
         ratings = await storage.getDriverRatingsByDriverId(driverId);
       } else if (req.user && req.user.role === UserRole.USER) {
@@ -347,7 +347,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         return res.status(403).json({ message: "Unauthorized to view ratings" });
       }
-      
+
       res.json(ratings);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch driver ratings" });
@@ -358,11 +358,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const driverId = parseInt(req.params.driverId);
       const average = await storage.getAverageDriverRating(driverId);
-      
+
       if (average === null) {
         return res.status(404).json({ message: "No ratings found for this driver" });
       }
-      
+
       res.json({ driverId, averageRating: average });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch average driver rating" });
@@ -400,11 +400,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const assignmentId = parseInt(req.params.assignmentId);
       const update = await storage.getLatestLocationUpdateByAssignmentId(assignmentId);
-      
+
       if (!update) {
         return res.status(404).json({ message: "No location updates found for this assignment" });
       }
-      
+
       res.json(update);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch latest location update" });
@@ -414,17 +414,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/location-updates", checkRole(UserRole.DRIVER), async (req, res) => {
     try {
       const locationData = insertLocationUpdateSchema.parse(req.body);
-      
+
       // Check if driver is assigned to this assignment
       const assignment = await storage.getAssignment(locationData.assignmentId);
       if (!assignment) {
         return res.status(404).json({ message: "Assignment not found" });
       }
-      
+
       if (assignment.driverId !== req.user.id) {
         return res.status(403).json({ message: "Unauthorized to update location for this assignment" });
       }
-      
+
       const locationUpdate = await storage.createLocationUpdate(locationData);
       res.status(201).json(locationUpdate);
     } catch (error) {
@@ -442,7 +442,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const activeVehicles = await storage.getActiveVehicles();
       const drivers = await storage.getUsersByRole(UserRole.DRIVER);
       const users = await storage.getUsersByRole(UserRole.USER);
-      
+
       res.json({
         activeRoutesCount: activeRoutes.length,
         activeVehiclesCount: activeVehicles.length,
@@ -458,21 +458,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/users", checkRole(UserRole.ADMIN), async (req, res) => {
     try {
       const role = req.query.role as string;
-      
+
       let users = [];
-      
+
       if (role) {
         users = await storage.getUsersByRole(role);
       } else {
         users = await storage.getAllUsers();
       }
-      
+
       // Remove passwords from response
       const usersWithoutPasswords = users.map(user => {
         const { password, ...userWithoutPassword } = user;
         return userWithoutPassword;
       });
-      
+
       res.json(usersWithoutPasswords);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch users" });

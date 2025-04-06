@@ -33,18 +33,13 @@ export async function apiRequest(
   });
 
   try {
-    await throwIfResNotOk(res);
-    const text = await res.text();
-    try {
-      return JSON.parse(text);
-    } catch (e) {
-      console.error('Error parsing JSON:', text);
-      throw new Error('Invalid JSON response from server');
+      await throwIfResNotOk(res);
+      const response = await res.json();
+      return response;
+    } catch (error) {
+      console.error("API Request Error:", error);
+      throw new Error(error instanceof Error ? error.message : 'Error en la solicitud');
     }
-  } catch (error) {
-    console.error("API Request Error:", error);
-    return {error: error.message}; 
-  }
 }
 
 export async function post(url: string, data: unknown): Promise<any> {
