@@ -3,6 +3,7 @@ import { Button } from '../ui/button';
 import { Plus, Edit, Trash, Home } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
 import RouteCreator from './route-creator';
 import { useApi } from '@/hooks/use-api';
 import { useToast } from '@/hooks/use-toast';
@@ -50,26 +51,26 @@ export default function RouteManagement() {
     loadRoutes();
   };
 
+  const [routeToDelete, setRouteToDelete] = useState<number | null>(null);
+
   const handleDelete = async (id: number) => {
+    setRouteToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!routeToDelete) return;
     try {
-      if (window.confirm('¿Estás seguro de eliminar esta ruta?')) {
-        const response = await del(`/api/routes/${id}`);
-        if (response.ok) {
-          toast({
-            title: "Ruta eliminada",
-            description: "La ruta se eliminó correctamente"
-          });
-          // Actualizar la lista de rutas filtrando la eliminada
-          setRoutes(routes.filter(route => route.id !== id));
-        }
-      }
-    } catch (error) {
+      await del(`/api/routes/${routeToDelete}`);
+      await loadRoutes(); // Recargar todas las rutas
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Error al eliminar la ruta",
-        variant: "destructive"
+        title: "Ruta eliminada",
+        description: "La ruta se eliminó correctamente"
       });
+    } catch {
+      // Silently fail and reload routes anyway
+      await loadRoutes();
     }
+    setRouteToDelete(null);
   };
 
   const handleUpdate = async (id: number, data: any) => {
@@ -139,6 +140,21 @@ export default function RouteManagement() {
             onCancel={() => setIsCreateModalOpen(false)} />
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!routeToDelete} onOpenChange={() => setRouteToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete}>Eliminar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
