@@ -10,8 +10,16 @@ interface Client {
 }
 
 export function setupWebSocketServer(server: Server) {
-  const wss = new WebSocketServer({ server, path: '/ws' });
+  const wss = new WebSocketServer({ 
+    server, 
+    path: '/ws',
+    perMessageDeflate: false
+  });
   const clients: Map<WebSocket, Client> = new Map();
+
+  wss.on('error', (error) => {
+    console.error('WebSocket Server Error:', error);
+  });
 
   wss.on('connection', (ws) => {
     // Initialize client
