@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Plus, Edit, Trash, Home } from 'lucide-react';
+import { Plus, Edit, Trash } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
 import { Input } from '../ui/input';
@@ -19,7 +19,8 @@ export default function DriverManagement() {
     username: '',
     email: '',
     password: '',
-    fullName: ''
+    fullName: '',
+    role: 'driver' as const
   });
 
   const { get, post, put, del } = useApi();
@@ -48,7 +49,8 @@ export default function DriverManagement() {
       username: driver.username,
       email: driver.email,
       password: '',
-      fullName: driver.fullName || ''
+      fullName: driver.fullName || '',
+      role: 'driver'
     });
     setIsModalOpen(true);
   };
@@ -58,33 +60,16 @@ export default function DriverManagement() {
     setIsSubmitting(true);
 
     try {
-      const payload = {
-        ...formData,
-        role: 'driver'
-      };
-
       if (editingDriver) {
         // Update existing driver
-        const response = await put(`/api/users/${editingDriver.id}`, payload);
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.message || 'Error al actualizar conductor');
-        }
-        
+        await put(`/api/users/${editingDriver.id}`, formData);
         toast({
           title: "Conductor actualizado",
           description: "Los datos del conductor se actualizaron correctamente"
         });
       } else {
         // Create new driver
-        const response = await post('/api/users', payload);
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.message || 'Error al crear conductor');
-        }
-        
+        await post('/api/users', formData);
         toast({
           title: "Conductor creado",
           description: "El nuevo conductor se agregó correctamente"
@@ -97,7 +82,8 @@ export default function DriverManagement() {
         username: '',
         email: '',
         password: '',
-        fullName: ''
+        fullName: '',
+        role: 'driver'
       });
       setEditingDriver(null);
     } catch (error) {
@@ -135,26 +121,21 @@ export default function DriverManagement() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Driver Management</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => window.location.replace('/')}>
-            <Home className="h-4 w-4 mr-2" />
-            Home
-          </Button>
-          <Button onClick={() => {
-            setFormData({
-              username: '',
-              email: '',
-              password: '',
-              fullName: ''
-            });
-            setEditingDriver(null);
-            setIsModalOpen(true);
-          }}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Driver
-          </Button>
-        </div>
+        <h1 className="text-2xl font-bold">Gestión de Conductores</h1>
+        <Button onClick={() => {
+          setFormData({
+            username: '',
+            email: '',
+            password: '',
+            fullName: '',
+            role: 'driver'
+          });
+          setEditingDriver(null);
+          setIsModalOpen(true);
+        }}>
+          <Plus className="w-4 h-4 mr-2" />
+          Agregar Conductor
+        </Button>
       </div>
 
       <div className="grid gap-4">
@@ -179,20 +160,17 @@ export default function DriverManagement() {
       </div>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent aria-describedby="driver-form-description">
-          <div id="driver-form-description" className="sr-only">
-            Formulario para agregar o editar un conductor
-          </div>
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editingDriver ? 'Edit Driver' : 'Add New Driver'}</DialogTitle>
+            <DialogTitle>{editingDriver ? 'Editar Conductor' : 'Agregar Nuevo Conductor'}</DialogTitle>
             <DialogDescription>
-              {editingDriver ? 'Edit the driver information below.' : 'Fill in the details to add a new driver.'}
+              {editingDriver ? 'Edita la información del conductor.' : 'Completa los detalles para agregar un nuevo conductor.'}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Input
-                placeholder="Username"
+                placeholder="Nombre de usuario"
                 value={formData.username}
                 onChange={(e) => setFormData({...formData, username: e.target.value})}
                 required
@@ -200,7 +178,7 @@ export default function DriverManagement() {
             </div>
             <div>
               <Input
-                placeholder="Full Name"
+                placeholder="Nombre completo"
                 value={formData.fullName}
                 onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                 required
@@ -218,7 +196,7 @@ export default function DriverManagement() {
             <div>
               <Input
                 type="password"
-                placeholder="Password"
+                placeholder="Contraseña"
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
                 required={!editingDriver}
@@ -230,8 +208,8 @@ export default function DriverManagement() {
               disabled={isSubmitting}
             >
               {isSubmitting 
-                ? 'Loading...' 
-                : (editingDriver ? 'Update Driver' : 'Add Driver')
+                ? 'Guardando...' 
+                : (editingDriver ? 'Actualizar Conductor' : 'Agregar Conductor')
               }
             </Button>
           </form>
