@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Plus } from 'lucide-react';
 import type { Route } from '@shared/schema';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@radix-ui/react-select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 
 interface RouteCreatorProps {
