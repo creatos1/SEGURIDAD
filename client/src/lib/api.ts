@@ -22,6 +22,11 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<any> { 
+  console.log(`Making ${method} request to ${url}`);
+  if (data) {
+    console.log('Request data:', data);
+  }
+
   const res = await fetch(url, {
     method,
     headers: {
@@ -33,13 +38,36 @@ export async function apiRequest(
   });
 
   try {
-      await throwIfResNotOk(res);
-      const response = await res.json();
+    console.log(`Response status: ${res.status}`);
+    console.log('Response headers:', Object.fromEntries(res.headers.entries()));
+    
+    await throwIfResNotOk(res);
+    
+    const contentType = res.headers.get('content-type');
+    console.log('Content-Type:', contentType);
+    
+    const text = await res.text();
+    console.log('Raw response:', text);
+    
+    try {
+      const response = JSON.parse(text);
+      console.log('Parsed response:', response);
       return response;
-    } catch (error) {
-      console.error("API Request Error:", error);
-      throw new Error(error instanceof Error ? error.message : 'Error en la solicitud');
+    } catch (parseError) {
+      console.error('JSON Parse Error:', parseError);
+      console.error('Failed to parse:', text);
+      throw new Error(`Invalid JSON response: ${parseError.message}`);
     }
+  } catch (error) {
+    console.error("Full API Request Error:", {
+      url,
+      method,
+      status: res.status,
+      statusText: res.statusText,
+      error
+    });
+    throw error;
+  }
 }
 
 export async function post(url: string, data: unknown): Promise<any> {
