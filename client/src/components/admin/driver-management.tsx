@@ -35,7 +35,11 @@ export default function DriverManagement() {
     try {
       const data = await get('/api/users', { role: 'DRIVER' });
       if (Array.isArray(data)) {
-        setDrivers(data);
+        const driversData = data.map(driver => ({
+          ...driver,
+          fullName: driver.name || driver.fullName
+        }));
+        setDrivers(driversData);
       } else {
         console.error('Unexpected response format:', data);
         toast({
@@ -58,17 +62,20 @@ export default function DriverManagement() {
     e.preventDefault();
     try {
       const payload = {
-        ...formData,
-        role: 'DRIVER',
-        fullName: formData.name // Asegurarnos de enviar el nombre completo
+        username: formData.username,
+        email: formData.email,
+        name: formData.name,
+        role: 'DRIVER'
       };
       
       if (editingDriver) {
-        // Si estamos editando, omitimos la contraseña si está vacía
-        if (!payload.password) {
-          delete payload.password;
+        if (formData.password) {
+          payload.password = formData.password;
         }
-        await put(`/api/users/${editingDriver.id}`, payload);
+        const response = await put(`/api/users/${editingDriver.id}`, payload);
+        if (!response) {
+          throw new Error('Error al actualizar el conductor');
+        }
         toast({
           title: "Conductor actualizado",
           description: "Los datos se actualizaron correctamente"
