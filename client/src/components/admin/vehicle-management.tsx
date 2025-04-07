@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Plus, Edit, Trash } from 'lucide-react';
@@ -12,11 +13,12 @@ import {
 } from '../ui/dialog';
 import { useApi } from '@/hooks/use-api';
 import { useToast } from '../ui/use-toast';
+import type { Vehicle } from '@shared/schema';
 
 export default function VehicleManagement() {
-  const [vehicles, setVehicles] = useState([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingVehicle, setEditingVehicle] = useState(null);
+  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [formData, setFormData] = useState({
     vehicleNumber: '',
     vehicleType: '',
@@ -24,22 +26,23 @@ export default function VehicleManagement() {
     status: 'active'
   });
 
-  useEffect(() => {
-    if (editingVehicle) {
-      setFormData({
-        vehicleNumber: editingVehicle.vehicleNumber || '',
-        vehicleType: editingVehicle.vehicleType || '',
-        capacity: editingVehicle.capacity.toString(),
-        status: editingVehicle.status
-      });
-    }
-  }, [editingVehicle]);
   const { get, post, put, del } = useApi();
   const { toast } = useToast();
 
   useEffect(() => {
     loadVehicles();
   }, []);
+
+  useEffect(() => {
+    if (editingVehicle) {
+      setFormData({
+        vehicleNumber: editingVehicle.vehicleNumber,
+        vehicleType: editingVehicle.vehicleType,
+        capacity: editingVehicle.capacity.toString(),
+        status: editingVehicle.status
+      });
+    }
+  }, [editingVehicle]);
 
   const loadVehicles = async () => {
     try {
@@ -54,45 +57,48 @@ export default function VehicleManagement() {
     }
   };
 
+  const validateForm = () => {
+    if (!formData.vehicleNumber.trim()) {
+      throw new Error("El número de vehículo es requerido");
+    }
+    if (!formData.vehicleType.trim()) {
+      throw new Error("El tipo de vehículo es requerido");
+    }
+    if (!formData.capacity || parseInt(formData.capacity) <= 0) {
+      throw new Error("La capacidad debe ser un número positivo");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (editingVehicle) {
-        const response = await put(`/api/vehicles/${editingVehicle.id}`, {
-          vehicleNumber: formData.vehicleNumber,
-          vehicleType: formData.vehicleType,
-          capacity: parseInt(formData.capacity),
-          status: formData.status
-        });
-        
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || 'Error al actualizar el vehículo');
-        }
+      validateForm();
+      
+      const payload = {
+        vehicleNumber: formData.vehicleNumber,
+        vehicleType: formData.vehicleType,
+        capacity: parseInt(formData.capacity),
+        status: formData.status
+      };
 
+      if (editingVehicle) {
+        await put(`/api/vehicles/${editingVehicle.id}`, payload);
         toast({
           title: "Vehículo actualizado",
           description: "Los datos se actualizaron correctamente"
         });
-        
-        setIsModalOpen(false);
-        setEditingVehicle(null);
-        await loadVehicles();
       } else {
-        const response = await post('/api/vehicles', payload);
-        if (response.ok) {
-          toast({
-            title: "Vehículo creado",
-            description: "El nuevo vehículo se agregó correctamente"
-          });
-          setIsModalOpen(false);
-          setEditingVehicle(null);
-          await loadVehicles();
-        } else {
-          const error = await response.json();
-          throw new Error(error.message || 'Error al crear el vehículo');
-        }
+        await post('/api/vehicles', payload);
+        toast({
+          title: "Vehículo creado",
+          description: "El nuevo vehículo se agregó correctamente"
+        });
       }
+      
+      setIsModalOpen(false);
+      setEditingVehicle(null);
+      resetForm();
+      await loadVehicles();
     } catch (error) {
       toast({
         title: "Error",
@@ -105,25 +111,29 @@ export default function VehicleManagement() {
   const handleDelete = async (id: number) => {
     try {
       if (window.confirm('¿Estás seguro de eliminar este vehículo?')) {
-        const response = await del(`/api/vehicles/${id}`);
-        if (response.ok) {
-          toast({
-            title: "Vehículo eliminado",
-            description: "El vehículo se eliminó correctamente"
-          });
-          await loadVehicles();
-        } else {
-          const error = await response.json();
-          throw new Error(error.message || 'Error al eliminar el vehículo');
-        }
+        await del(`/api/vehicles/${id}`);
+        toast({
+          title: "Vehículo eliminado",
+          description: "El vehículo se eliminó correctamente"
+        });
+        await loadVehicles();
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Error al eliminar el vehículo",
+        description: "Error al eliminar el vehículo",
         variant: "destructive"
       });
     }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      vehicleNumber: '',
+      vehicleType: '',
+      capacity: '',
+      status: 'active'
+    });
   };
 
   return (
@@ -132,10 +142,7 @@ export default function VehicleManagement() {
         <h1 className="text-2xl font-bold">Gestión de Vehículos</h1>
         <Button onClick={() => {
           setEditingVehicle(null);
-          setFormData({
-            capacity: '',
-            status: 'active'
-          });
+          resetForm();
           setIsModalOpen(true);
         }}>
           <Plus className="w-4 h-4 mr-2" />
@@ -144,12 +151,12 @@ export default function VehicleManagement() {
       </div>
 
       <div className="grid gap-4">
-        {vehicles.map((vehicle: any) => (
+        {vehicles.map((vehicle) => (
           <Card key={vehicle.id} className="p-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-semibold">{vehicle.vehicleNumber || `Vehículo #${vehicle.id}`}</h3>
-                <p className="text-sm text-gray-500">Tipo: {vehicle.vehicleType || 'Estándar'}</p>
+                <h3 className="font-semibold">{vehicle.vehicleNumber}</h3>
+                <p className="text-sm text-gray-500">Tipo: {vehicle.vehicleType}</p>
                 <p className="text-sm text-gray-500">Capacidad: {vehicle.capacity}</p>
                 <p className="text-sm text-gray-500">Estado: {vehicle.status}</p>
               </div>
@@ -159,10 +166,6 @@ export default function VehicleManagement() {
                   size="icon"
                   onClick={() => {
                     setEditingVehicle(vehicle);
-                    setFormData({
-                      capacity: vehicle.capacity.toString(),
-                      status: vehicle.status
-                    });
                     setIsModalOpen(true);
                   }}
                 >
@@ -212,6 +215,7 @@ export default function VehicleManagement() {
               value={formData.capacity}
               onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
               required
+              min="1"
             />
             <Button type="submit" className="w-full">
               {editingVehicle ? 'Actualizar' : 'Crear'}
