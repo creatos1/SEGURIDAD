@@ -59,10 +59,15 @@ export default function DriverManagement() {
     try {
       const payload = {
         ...formData,
-        role: 'DRIVER'
+        role: 'DRIVER',
+        fullName: formData.name // Asegurarnos de enviar el nombre completo
       };
       
       if (editingDriver) {
+        // Si estamos editando, omitimos la contraseña si está vacía
+        if (!payload.password) {
+          delete payload.password;
+        }
         await put(`/api/users/${editingDriver.id}`, payload);
         toast({
           title: "Conductor actualizado",
@@ -77,6 +82,12 @@ export default function DriverManagement() {
       }
       setIsModalOpen(false);
       setEditingDriver(null);
+      setFormData({
+        username: '',
+        email: '',
+        password: '',
+        name: ''
+      });
       await loadDrivers();
     } catch (error) {
       toast({
@@ -95,7 +106,7 @@ export default function DriverManagement() {
           title: "Conductor eliminado",
           description: "El conductor se eliminó correctamente"
         });
-        loadDrivers();
+        await loadDrivers();
       }
     } catch (error) {
       toast({
@@ -130,7 +141,7 @@ export default function DriverManagement() {
           <Card key={driver.id} className="p-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-semibold">{driver.name}</h3>
+                <h3 className="font-semibold">{driver.fullName || driver.name}</h3>
                 <p className="text-sm text-gray-500">{driver.email}</p>
               </div>
               <div className="flex gap-2">
@@ -143,7 +154,7 @@ export default function DriverManagement() {
                       username: driver.username,
                       email: driver.email,
                       password: '',
-                      name: driver.name
+                      name: driver.fullName || driver.name
                     });
                     setIsModalOpen(true);
                   }}
@@ -175,7 +186,7 @@ export default function DriverManagement() {
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              placeholder="Nombre"
+              placeholder="Nombre completo"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
