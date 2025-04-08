@@ -82,13 +82,21 @@ export default function VehicleManagement() {
       };
 
       if (editingVehicle) {
-        await put(`/api/vehicles/${editingVehicle.id}`, payload);
+        const response = await put(`/api/vehicles/${editingVehicle.id}`, payload);
+        if (!response) {
+          throw new Error('Error al actualizar el vehículo');
+        }
+        setVehicles(vehicles.map(v => v.id === editingVehicle.id ? response : v));
         toast({
           title: "Vehículo actualizado",
           description: "Los datos se actualizaron correctamente"
         });
       } else {
-        await post('/api/vehicles', payload);
+        const response = await post('/api/vehicles', payload);
+        if (!response) {
+          throw new Error('Error al crear el vehículo');
+        }
+        setVehicles([...vehicles, response]);
         toast({
           title: "Vehículo creado",
           description: "El nuevo vehículo se agregó correctamente"
@@ -98,8 +106,8 @@ export default function VehicleManagement() {
       setIsModalOpen(false);
       setEditingVehicle(null);
       resetForm();
-      await loadVehicles();
     } catch (error) {
+      console.error('Error:', error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Error al procesar la operación",
