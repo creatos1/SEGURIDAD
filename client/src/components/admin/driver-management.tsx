@@ -67,12 +67,16 @@ export default function DriverManagement() {
         }
 
         const response = await put(`/api/users/${editingDriver.id}`, updateData);
-        if (!response) {
-          throw new Error('Error al actualizar el conductor');
-        }
-
+        
         await loadDrivers();
         setIsModalOpen(false);
+        setFormData({
+          username: '',
+          email: '',
+          password: '',
+          name: '',
+          role: 'DRIVER'
+        });
         setEditingDriver(null);
         toast({
           title: "Éxito",

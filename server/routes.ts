@@ -495,5 +495,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put('/api/users/:id', checkRole(UserRole.ADMIN), async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const userData = {
+        ...req.body,
+        role: UserRole.DRIVER
+      };
+      const driver = await storage.updateUser(id, userData);
+      if (!driver) {
+        return res.status(404).json({ message: "Driver not found" });
+      }
+      const { password, ...driverWithoutPassword } = driver;
+      res.json(driverWithoutPassword);
+    } catch (error) {
+      res.status(400).json({ message: error instanceof Error ? error.message : "Error updating driver" });
+    }
+  });
+
   return httpServer;
 }
