@@ -64,7 +64,7 @@ export default function DriverManagement() {
       const payload = {
         username: formData.username,
         email: formData.email,
-        name: formData.name,
+        fullName: formData.name,
         role: 'DRIVER'
       };
       
@@ -76,6 +76,7 @@ export default function DriverManagement() {
         if (!response) {
           throw new Error('Error al actualizar el conductor');
         }
+        await loadDrivers(); // Aseguramos que se recargue la lista
         toast({
           title: "Conductor actualizado",
           description: "Los datos se actualizaron correctamente"
