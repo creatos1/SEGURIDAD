@@ -129,22 +129,30 @@ export default function DriverManagement() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de eliminar este conductor?')) {
-      try {
-        await del(`/api/users/${id}`);
-        toast({
-          title: "Éxito",
-          description: "Conductor eliminado correctamente"
-        });
-        await loadDrivers();
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "No se pudo eliminar el conductor",
-          variant: "destructive"
-        });
+  const handleDelete = async (id: number) => {
+    try {
+      if (!window.confirm('¿Estás seguro de eliminar este conductor?')) {
+        return;
       }
+      
+      const response = await del(`/api/users/${id}`);
+      if (!response) {
+        throw new Error('No se pudo eliminar el conductor');
+      }
+
+      toast({
+        title: "Éxito",
+        description: "Conductor eliminado correctamente"
+      });
+      
+      await loadDrivers();
+    } catch (error) {
+      console.error('Error al eliminar conductor:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar el conductor",
+        variant: "destructive"
+      });
     }
   };
 

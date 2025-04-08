@@ -513,5 +513,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete('/api/users/:id', checkRole(UserRole.ADMIN), async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteUser(id);
+      if (!success) {
+        return res.status(404).json({ message: "Driver not found" });
+      }
+      res.status(200).json({ message: "Driver deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: error instanceof Error ? error.message : "Error deleting driver" });
+    }
+  });
+
   return httpServer;
 }
