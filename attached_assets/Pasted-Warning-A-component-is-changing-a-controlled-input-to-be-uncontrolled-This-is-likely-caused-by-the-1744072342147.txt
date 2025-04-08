@@ -1,0 +1,47 @@
+Warning: A component is changing a controlled input to be uncontrolled. This is likely caused by the value changing from a defined to undefined, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://reactjs.org/link/controlled-components
+    at input
+    at _c (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/src/components/ui/input.tsx:20:11)
+    at form
+    at div
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:202:13
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:231:7
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:124:11
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:105:11
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:202:13
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:430:5
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:1295:13
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:1218:58
+    at Presence (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:651:11)
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:1209:64
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:124:11
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:105:11
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:202:13
+    at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:633:22
+    at Presence (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:651:11)
+    at Provider (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-JJS7DLG7.js?v=df40bbd7:38:15)
+    at DialogPortal (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:1172:11)
+    at _c3 (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/src/components/ui/dialog.tsx:51:12)
+    at Provider (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-JJS7DLG7.js?v=df40bbd7:38:15)
+    at Dialog (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=df40bbd7:1113:5)
+    at div
+    at VehicleManagement (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/src/components/admin/vehicle-management.tsx:34:35)
+    at main
+    at div
+    at DashboardPage (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/src/pages/dashboard-page.tsx:32:35)
+    at Route (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=df40bbd7:323:16)
+    at ProtectedRoute (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/src/lib/protected-route.tsx:22:3)
+    at Switch (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=df40bbd7:379:17)
+    at Router
+    at TourProvider…
+Error al eliminar conductor: 
+Error {}
+message: "Driver not found"
+stack: "Error: Driver not found↵ at apiRequest (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/src/hooks/use-api.ts:15:13)↵ at async handleDelete (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/src/components/admin/driver-management.tsx:128:24)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+at t.value (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://a16dd885-49c2-4c2f-aef6-a333b2c60657-00-2sc7lks7j3d8z.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
