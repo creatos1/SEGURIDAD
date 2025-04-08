@@ -32,9 +32,10 @@ export default function DriverManagement() {
   const loadDrivers = async () => {
     try {
       const response = await get('/api/users', { role: 'DRIVER' });
-      if (Array.isArray(response)) {
-        setDrivers(response);
+      if (!response || !Array.isArray(response)) {
+        throw new Error('Invalid response format');
       }
+      setDrivers(response);
     } catch (error) {
       console.error('Error loading drivers:', error);
       toast({
@@ -54,19 +55,25 @@ export default function DriverManagement() {
     
     try {
       if (editingDriver) {
-        // Actualizar conductor existente
         const updateData = {
           username: formData.username,
           email: formData.email,
-          fullName: formData.name,
+          name: formData.name,
           role: 'DRIVER'
         };
 
-        if (formData.password) {
+        if (formData.password && formData.password.trim()) {
           updateData.password = formData.password;
         }
 
-        await put(`/api/users/${editingDriver.id}`, updateData);
+        const response = await put(`/api/users/${editingDriver.id}`, updateData);
+        if (!response) {
+          throw new Error('Error al actualizar el conductor');
+        }
+
+        await loadDrivers();
+        setIsModalOpen(false);
+        setEditingDriver(null);
         toast({
           title: "Éxito",
           description: "Conductor actualizado correctamente"
