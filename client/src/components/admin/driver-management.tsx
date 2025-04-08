@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Plus, Edit, Trash } from 'lucide-react';
+import { Plus, Edit, Trash, Eye } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
 import {
@@ -52,7 +51,7 @@ export default function DriverManagement() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       if (editingDriver) {
         const updateData = {
@@ -67,7 +66,7 @@ export default function DriverManagement() {
         }
 
         await put(`/api/users/${editingDriver.id}`, updateData);
-        
+
         toast({
           title: "Éxito",
           description: "Conductor actualizado correctamente"
@@ -92,7 +91,7 @@ export default function DriverManagement() {
       });
       setEditingDriver(null);
       setIsModalOpen(false);
-      
+
       await loadDrivers();
     } catch (error) {
       console.error('Error:', error);
@@ -121,14 +120,14 @@ export default function DriverManagement() {
       if (!window.confirm('¿Estás seguro de eliminar este conductor?')) {
         return;
       }
-      
+
       const response = await del(`/api/users/${id}`);
       if (!response || response.message === "Driver not found") {
         throw new Error('Conductor no encontrado');
       }
 
       setDrivers(drivers.filter(driver => driver.id !== id));
-      
+
       toast({
         title: "Éxito",
         description: "Conductor eliminado correctamente"
@@ -172,18 +171,27 @@ export default function DriverManagement() {
                 <p className="text-sm text-gray-500">{driver.email}</p>
               </div>
               <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleEdit(driver)}
-                >
+                <Button variant="ghost" size="icon" 
+                  onClick={() => {
+                    toast({
+                      title: "Driver Details",
+                      description: (
+                        <div className="mt-2 space-y-2">
+                          <p><strong>Username:</strong> {driver.username}</p>
+                          <p><strong>Email:</strong> {driver.email}</p>
+                          <p><strong>Role:</strong> {driver.role}</p>
+                          <p><strong>Status:</strong> {driver.status}</p>
+                        </div>
+                      ),
+                      duration: 5000,
+                    });
+                  }}>
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => handleEdit(driver)}>
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleDelete(driver.id)}
-                >
+                <Button variant="ghost" size="icon" onClick={() => handleDelete(driver.id)}>
                   <Trash className="h-4 w-4" />
                 </Button>
               </div>
