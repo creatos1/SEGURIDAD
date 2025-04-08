@@ -22,106 +22,118 @@ export default function DriverManagement() {
     username: '',
     email: '',
     password: '',
-    name: ''
+    name: '',
+    role: 'DRIVER'
   });
+
   const { get, post, put, del } = useApi();
   const { toast } = useToast();
 
-  useEffect(() => {
-    loadDrivers();
-  }, []);
-
   const loadDrivers = async () => {
     try {
-      const data = await get('/api/users', { role: 'DRIVER' });
-      if (Array.isArray(data)) {
-        const driversData = data.map(driver => ({
-          ...driver,
-          fullName: driver.name || driver.fullName
-        }));
-        setDrivers(driversData);
-      } else {
-        console.error('Unexpected response format:', data);
-        toast({
-          title: "Error",
-          description: "Error en el formato de datos de conductores",
-          variant: "destructive"
-        });
+      const response = await get('/api/users', { role: 'DRIVER' });
+      if (Array.isArray(response)) {
+        setDrivers(response);
       }
     } catch (error) {
       console.error('Error loading drivers:', error);
       toast({
         title: "Error",
-        description: "Error al cargar conductores",
+        description: "No se pudieron cargar los conductores",
         variant: "destructive"
       });
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    loadDrivers();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
     try {
-      const payload = {
-        username: formData.username,
-        email: formData.email,
-        fullName: formData.name,
-        role: 'DRIVER'
-      };
-      
       if (editingDriver) {
+        // Actualizar conductor existente
+        const updateData = {
+          username: formData.username,
+          email: formData.email,
+          fullName: formData.name,
+          role: 'DRIVER'
+        };
+
         if (formData.password) {
-          payload.password = formData.password;
+          updateData.password = formData.password;
         }
-        const response = await put(`/api/users/${editingDriver.id}`, payload);
-        if (!response) {
-          throw new Error('Error al actualizar el conductor');
-        }
-        await loadDrivers(); // Aseguramos que se recargue la lista
+
+        await put(`/api/users/${editingDriver.id}`, updateData);
         toast({
-          title: "Conductor actualizado",
-          description: "Los datos se actualizaron correctamente"
+          title: "Éxito",
+          description: "Conductor actualizado correctamente"
         });
       } else {
-        await post('/api/users', payload);
+        // Crear nuevo conductor
+        await post('/api/users', {
+          ...formData,
+          role: 'DRIVER'
+        });
         toast({
-          title: "Conductor creado",
-          description: "El nuevo conductor se agregó correctamente"
+          title: "Éxito",
+          description: "Conductor creado correctamente"
         });
       }
-      setIsModalOpen(false);
-      setEditingDriver(null);
+
+      // Limpiar formulario y cerrar modal
       setFormData({
         username: '',
         email: '',
         password: '',
-        name: ''
+        name: '',
+        role: 'DRIVER'
       });
+      setEditingDriver(null);
+      setIsModalOpen(false);
+      
+      // Recargar lista de conductores
       await loadDrivers();
     } catch (error) {
+      console.error('Error:', error);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Error al procesar la operación",
+        description: "Hubo un error al procesar la operación",
         variant: "destructive"
       });
     }
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      if (window.confirm('¿Estás seguro de eliminar este conductor?')) {
+  const handleEdit = (driver) => {
+    setEditingDriver(driver);
+    setFormData({
+      username: driver.username,
+      email: driver.email,
+      password: '',
+      name: driver.fullName || '',
+      role: 'DRIVER'
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('¿Estás seguro de eliminar este conductor?')) {
+      try {
         await del(`/api/users/${id}`);
         toast({
-          title: "Conductor eliminado",
-          description: "El conductor se eliminó correctamente"
+          title: "Éxito",
+          description: "Conductor eliminado correctamente"
         });
         await loadDrivers();
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "No se pudo eliminar el conductor",
+          variant: "destructive"
+        });
       }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Error al eliminar el conductor",
-        variant: "destructive"
-      });
     }
   };
 
@@ -135,7 +147,8 @@ export default function DriverManagement() {
             username: '',
             email: '',
             password: '',
-            name: ''
+            name: '',
+            role: 'DRIVER'
           });
           setIsModalOpen(true);
         }}>
@@ -145,27 +158,18 @@ export default function DriverManagement() {
       </div>
 
       <div className="grid gap-4">
-        {drivers.map((driver: any) => (
+        {drivers.map((driver) => (
           <Card key={driver.id} className="p-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-semibold">{driver.fullName || driver.name}</h3>
+                <h3 className="font-semibold">{driver.fullName}</h3>
                 <p className="text-sm text-gray-500">{driver.email}</p>
               </div>
               <div className="flex gap-2">
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => {
-                    setEditingDriver(driver);
-                    setFormData({
-                      username: driver.username,
-                      email: driver.email,
-                      password: '',
-                      name: driver.fullName || driver.name
-                    });
-                    setIsModalOpen(true);
-                  }}
+                  onClick={() => handleEdit(driver)}
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
