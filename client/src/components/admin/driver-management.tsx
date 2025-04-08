@@ -123,16 +123,16 @@ export default function DriverManagement() {
       }
       
       const response = await del(`/api/users/${id}`);
-      if (response && response.message === "Driver not found") {
+      if (!response || response.message === "Driver not found") {
         throw new Error('Conductor no encontrado');
       }
 
+      setDrivers(drivers.filter(driver => driver.id !== id));
+      
       toast({
         title: "Éxito",
         description: "Conductor eliminado correctamente"
       });
-      
-      await loadDrivers();
     } catch (error) {
       console.error('Error al eliminar conductor:', error);
       toast({
