@@ -66,24 +66,13 @@ export default function DriverManagement() {
           updateData.password = formData.password;
         }
 
-        const response = await put(`/api/users/${editingDriver.id}`, updateData);
+        await put(`/api/users/${editingDriver.id}`, updateData);
         
-        await loadDrivers();
-        setIsModalOpen(false);
-        setFormData({
-          username: '',
-          email: '',
-          password: '',
-          name: '',
-          role: 'DRIVER'
-        });
-        setEditingDriver(null);
         toast({
           title: "Éxito",
           description: "Conductor actualizado correctamente"
         });
       } else {
-        // Crear nuevo conductor
         await post('/api/users', {
           ...formData,
           role: 'DRIVER'
@@ -94,7 +83,6 @@ export default function DriverManagement() {
         });
       }
 
-      // Limpiar formulario y cerrar modal
       setFormData({
         username: '',
         email: '',
@@ -105,7 +93,6 @@ export default function DriverManagement() {
       setEditingDriver(null);
       setIsModalOpen(false);
       
-      // Recargar lista de conductores
       await loadDrivers();
     } catch (error) {
       console.error('Error:', error);
@@ -129,15 +116,15 @@ export default function DriverManagement() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id) => {
     try {
       if (!window.confirm('¿Estás seguro de eliminar este conductor?')) {
         return;
       }
       
       const response = await del(`/api/users/${id}`);
-      if (!response) {
-        throw new Error('No se pudo eliminar el conductor');
+      if (response && response.message === "Driver not found") {
+        throw new Error('Conductor no encontrado');
       }
 
       toast({
@@ -150,7 +137,7 @@ export default function DriverManagement() {
       console.error('Error al eliminar conductor:', error);
       toast({
         title: "Error",
-        description: "No se pudo eliminar el conductor",
+        description: error.message || "No se pudo eliminar el conductor",
         variant: "destructive"
       });
     }
@@ -181,7 +168,7 @@ export default function DriverManagement() {
           <Card key={driver.id} className="p-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-semibold">{driver.fullName}</h3>
+                <h3 className="font-semibold">{driver.fullName || driver.username}</h3>
                 <p className="text-sm text-gray-500">{driver.email}</p>
               </div>
               <div className="flex gap-2">
