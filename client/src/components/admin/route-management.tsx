@@ -128,6 +128,7 @@ export default function RouteManagement() {
                 <h3 className="font-semibold">{route.name}</h3>
                 <p className="text-sm text-gray-500">{route.description}</p>
                 <p>Vehicle: {route.vehicleId ? `#${route.vehicleId}` : 'None'}</p>
+                <p className="text-sm text-gray-500">Vehicle Type: {vehicles.find(v => v.id === route.vehicleId)?.vehicleType || 'N/A'}</p>
               </div>
               <div className="flex gap-2">
                 <Button variant="ghost" size="icon" 

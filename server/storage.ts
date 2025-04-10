@@ -140,7 +140,8 @@ export class DatabaseStorage implements IStorage {
       waypoints: row.waypoints,
       frequency: row.frequency,
       createdBy: row.created_by,
-      createdAt: row.created_at
+      createdAt: row.created_at,
+      vehicleId: row.vehicle_id // Added vehicleId
     };
   }
 
@@ -386,16 +387,14 @@ export class DatabaseStorage implements IStorage {
 
   async createRoute(route: InsertRoute): Promise<Route> {
     try {
-      const { status, description, waypoints, createdBy, ...restRoute } = route;
-      const result = await db.insert(routes).values({
-        ...restRoute,
-        description: description || null,
-        waypoints: waypoints || [],
-        status: status || 'active',
-        createdBy: createdBy || null,
-        createdAt: new Date().toISOString()
-      }).returning();
-
+      // Verify vehicle exists if vehicleId is provided
+      if (route.vehicleId) {
+        const vehicle = await this.getVehicle(route.vehicleId);
+        if (!vehicle) {
+          throw new Error('Vehicle not found');
+        }
+      }
+      const result = await db.insert(routes).values(route).returning();
       return this.mapRowToRoute(result[0]);
     } catch (error) {
       console.error('Error in createRoute:', error);
