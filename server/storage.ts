@@ -141,6 +141,7 @@ export class DatabaseStorage implements IStorage {
       frequency: row.frequency,
       createdBy: row.created_by,
       createdAt: row.created_at,
+      vehicleId: row.vehicle_id,
       vehicleId: row.vehicle_id // Added vehicleId
     };
   }
