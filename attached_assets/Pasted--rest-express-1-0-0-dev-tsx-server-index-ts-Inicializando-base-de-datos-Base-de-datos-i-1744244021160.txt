@@ -1,0 +1,45 @@
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+Inicializando base de datos...
+Base de datos inicializada correctamente
+Base de datos inicializada correctamente
+12:13:15 AM [express] serving on port 5000
+12:13:21 AM [express] GET /api/user 401 in 2ms
+12:13:26 AM [express] POST /api/login 200 in 8ms :: {"id":4,"username":"admin","email":"admin@transit…
+Error in getActiveRoutes: SqliteError: no such column: "vehicle_id" - should this be a string literal in single-quotes?
+    at Database.prepare (/home/runner/workspace/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at BetterSQLiteSession.prepareQuery (/home/runner/workspace/node_modules/src/better-sqlite3/session.ts:50:28)
+    at BetterSQLiteSession.prepareOneTimeQuery (/home/runner/workspace/node_modules/src/sqlite-core/session.ts:135:15)
+    at SQLiteSelectBase._prepare (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:865:85)
+    at SQLiteSelectBase.all (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:884:15)
+    at SQLiteSelectBase.execute (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:896:15)
+    at SQLiteSelectBase.then (/home/runner/workspace/node_modules/src/query-promise.ts:31:15) {
+  code: 'SQLITE_ERROR'
+}
+12:13:27 AM [express] GET /api/stats 304 in 11ms :: {"activeRoutesCount":0,"activeVehiclesCount":3,"d…
+Error in getAllRoutes: SqliteError: no such column: "vehicle_id" - should this be a string literal in single-quotes?
+    at Database.prepare (/home/runner/workspace/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at BetterSQLiteSession.prepareQuery (/home/runner/workspace/node_modules/src/better-sqlite3/session.ts:50:28)
+    at BetterSQLiteSession.prepareOneTimeQuery (/home/runner/workspace/node_modules/src/sqlite-core/session.ts:135:15)
+    at SQLiteSelectBase._prepare (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:865:85)
+    at SQLiteSelectBase.all (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:884:15)
+    at SQLiteSelectBase.execute (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:896:15)
+    at SQLiteSelectBase.then (/home/runner/workspace/node_modules/src/query-promise.ts:31:15) {
+  code: 'SQLITE_ERROR'
+}
+12:13:27 AM [express] GET /api/routes 304 in 2ms :: []
+12:13:27 AM [express] GET /api/users 304 in 2ms :: [{"id":1,"username":"admin@transitpro.com","email"…
+Error in getAllRoutes: SqliteError: no such column: "vehicle_id" - should this be a string literal in single-quotes?
+    at Database.prepare (/home/runner/workspace/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at BetterSQLiteSession.prepareQuery (/home/runner/workspace/node_modules/src/better-sqlite3/session.ts:50:28)
+    at BetterSQLiteSession.prepareOneTimeQuery (/home/runner/workspace/node_modules/src/sqlite-core/session.ts:135:15)
+    at SQLiteSelectBase._prepare (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:865:85)
+    at SQLiteSelectBase.all (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:884:15)
+    at SQLiteSelectBase.execute (/home/runner/workspace/node_modules/src/sqlite-core/query-builders/select.ts:896:15)
+    at SQLiteSelectBase.then (/home/runner/workspace/node_modules/src/query-promise.ts:31:15) {
+  code: 'SQLITE_ERROR'
+}
+12:13:34 AM [express] GET /api/routes 304 in 4ms :: []
+12:13:34 AM [express] GET /api/vehicles 304 in 3ms :: [{"id":5,"capacity":111111111,"status":"active"…
