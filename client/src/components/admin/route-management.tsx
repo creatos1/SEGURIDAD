@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Plus, Edit, Trash, Home, Eye } from 'lucide-react';
+import { Plus, Edit, Trash, Home } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
@@ -127,29 +127,9 @@ export default function RouteManagement() {
               <div>
                 <h3 className="font-semibold">{route.name}</h3>
                 <p className="text-sm text-gray-500">{route.description}</p>
-                <p>Vehicle: {route.vehicleId ? `#${route.vehicleId}` : 'None'}</p>
+                <p>Vehicles: {route.vehicles?.map(v => v.id).join(', ') || 'None'}</p>
               </div>
               <div className="flex gap-2">
-                <Button variant="ghost" size="icon" 
-                  onClick={() => {
-                    toast({
-                      title: "Route Details",
-                      description: (
-                        <div className="mt-2 space-y-2">
-                          <p><strong>Name:</strong> {route.name}</p>
-                          <p><strong>Description:</strong> {route.description}</p>
-                          <p><strong>Start Location:</strong> {route.startLocation}</p>
-                          <p><strong>End Location:</strong> {route.endLocation}</p>
-                          <p><strong>Frequency:</strong> {route.frequency} min</p>
-                          <p><strong>Status:</strong> {route.status}</p>
-                          <p><strong>Vehicle ID:</strong> {route.vehicleId || 'None'}</p>
-                        </div>
-                      ),
-                      duration: 5000,
-                    });
-                  }}>
-                  <Eye className="h-4 w-4" />
-                </Button>
                 <Button variant="ghost" size="icon" onClick={() => handleEdit(route)}>
                   <Edit className="h-4 w-4" />
                 </Button>

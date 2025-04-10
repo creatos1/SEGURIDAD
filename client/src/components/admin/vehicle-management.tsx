@@ -1,6 +1,7 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Plus, Edit, Trash, Eye } from 'lucide-react'; // Added Eye import
+import { Plus, Edit, Trash } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
 import {
@@ -72,7 +73,7 @@ export default function VehicleManagement() {
     e.preventDefault();
     try {
       validateForm();
-
+      
       const payload = {
         vehicleNumber: formData.vehicleNumber,
         vehicleType: formData.vehicleType,
@@ -101,7 +102,7 @@ export default function VehicleManagement() {
           description: "El nuevo vehículo se agregó correctamente"
         });
       }
-
+      
       setIsModalOpen(false);
       setEditingVehicle(null);
       resetForm();
@@ -168,27 +169,13 @@ export default function VehicleManagement() {
                 <p className="text-sm text-gray-500">Estado: {vehicle.status}</p>
               </div>
               <div className="flex gap-2">
-                <Button variant="ghost" size="icon"
-                  onClick={() => {
-                    toast({
-                      title: "Vehicle Details",
-                      description: (
-                        <div className="mt-2 space-y-2">
-                          <p><strong>Vehicle Number:</strong> {vehicle.vehicleNumber}</p>
-                          <p><strong>Type:</strong> {vehicle.vehicleType}</p>
-                          <p><strong>Capacity:</strong> {vehicle.capacity}</p>
-                          <p><strong>Status:</strong> {vehicle.status}</p>
-                        </div>
-                      ),
-                      duration: 5000,
-                    });
-                  }}>
-                  <Eye className="h-4 w-4" />
-                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => {setEditingVehicle(vehicle); setIsModalOpen(true);}} //Assumed handleEdit
+                  onClick={() => {
+                    setEditingVehicle(vehicle);
+                    setIsModalOpen(true);
+                  }}
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
