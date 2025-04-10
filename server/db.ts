@@ -89,8 +89,7 @@ export async function initializeDatabase() {
         frequency INTEGER NOT NULL,
         status TEXT DEFAULT 'active',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        created_by INTEGER REFERENCES users(id),
-        vehicle_id INTEGER REFERENCES vehicles(id)
+        created_by INTEGER REFERENCES users(id)
       );
     `);
 
