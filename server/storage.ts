@@ -133,7 +133,7 @@ export class DatabaseStorage implements IStorage {
     return {
       id: row.id,
       name: row.name,
-      status: row.status,
+      status: row.status || 'active',
       description: row.description,
       startLocation: row.start_location,
       endLocation: row.end_location,
@@ -141,7 +141,7 @@ export class DatabaseStorage implements IStorage {
       frequency: row.frequency,
       createdBy: row.created_by,
       createdAt: row.created_at,
-      vehicleId: row.vehicle_id
+      vehicleId: row.vehicle_id ? parseInt(row.vehicle_id) : null
     };
   }
 
