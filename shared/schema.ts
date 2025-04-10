@@ -50,7 +50,7 @@ export const routes = table("routes", {
   status: text("status").notNull().default("active"),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
   createdBy: integer("created_by").references(() => users.id),
-  vehicleId: integer("vehicle_id").references(() => vehicles.id),
+  vehicleId: integer("vehicle_id"),
 });
 
 export const routeCoordinateSchema = z.object({
